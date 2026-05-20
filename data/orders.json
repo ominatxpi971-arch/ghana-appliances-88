@@ -1,0 +1,69 @@
+[
+  {
+    "id": "1778617068670",
+    "customer_name": "11",
+    "customer_phone": "11",
+    "customer_city": "",
+    "customer_address": "33",
+    "status": "delivered",
+    "total_ghs": 25000,
+    "notes": null,
+    "created_at": "2026-05-12T20:17:48.670Z",
+    "items": [
+      {
+        "id": "1778617068670mb3oxbzjeio",
+        "product_id": "2",
+        "product_name": "LG 65\" OLED TV",
+        "quantity": 2,
+        "unit_price": 12500
+      }
+    ]
+  },
+  {
+    "id": "1778616271303",
+    "customer_name": "11",
+    "customer_phone": "11",
+    "customer_city": "",
+    "customer_address": "1",
+    "status": "confirmed",
+    "total_ghs": 14300,
+    "notes": null,
+    "created_at": "2026-05-12T20:04:31.303Z",
+    "items": [
+      {
+        "id": "1778616271303m2wqwln4gn",
+        "product_id": "2",
+        "product_name": "LG 65\" OLED TV",
+        "quantity": 1,
+        "unit_price": 12500
+      },
+      {
+        "id": "1778616271303xwdec7pb60c",
+        "product_id": "3",
+        "product_name": "TCL 43\" Smart LED TV",
+        "quantity": 1,
+        "unit_price": 1800
+      }
+    ]
+  },
+  {
+    "id": "1778614539618",
+    "customer_name": "11",
+    "customer_phone": "11",
+    "customer_city": "",
+    "customer_address": "11",
+    "status": "shipping",
+    "total_ghs": 12500,
+    "notes": null,
+    "created_at": "2026-05-12T19:35:39.618Z",
+    "items": [
+      {
+        "id": "1778614539618az7wcfrpawp",
+        "product_id": "2",
+        "product_name": "LG 65\" OLED TV",
+        "quantity": 1,
+        "unit_price": 12500
+      }
+    ]
+  }
+]

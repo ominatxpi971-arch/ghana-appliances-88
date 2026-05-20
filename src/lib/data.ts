@@ -1,0 +1,100 @@
+﻿import { Product } from './types'
+
+export const products: Product[] = [
+  {
+    id: '1', name: 'Samsung 55" 4K Smart TV', slug: 'samsung-55-4k-smart-tv',
+    description: 'Experience stunning 4K resolution with Samsung Crystal UHD technology. Smart TV with built-in apps, HDR, and sleek design.',
+    category: 'televisions', price_ghs: 4500, original_price: 5200,
+    images: ['/placeholder-tv.jpg'],
+    specs: { 'Screen Size': '55"', 'Resolution': '4K UHD (3840x2160)', 'Smart TV': 'Yes', 'HDMI': '3 ports', 'Warranty': '2 Years' },
+    stock: 15, featured: true, active: true, created_at: '2026-01-01'
+  },
+  {
+    id: '2', name: 'LG 65" OLED TV', slug: 'lg-65-oled-tv',
+    description: 'LG OLED evo C4. Self-lit pixels for perfect black and incredible color. AI-powered processor for the best picture quality.',
+    category: 'televisions', price_ghs: 12500, original_price: 14000,
+    images: ['/placeholder-tv.jpg'],
+    specs: { 'Screen Size': '65"', 'Resolution': '4K OLED', 'Smart TV': 'Yes', 'HDMI': '4 ports', 'Warranty': '2 Years' },
+    stock: 8, featured: true, active: true, created_at: '2026-01-01'
+  },
+  {
+    id: '3', name: 'TCL 43" Smart LED TV', slug: 'tcl-43-smart-led-tv',
+    description: 'Affordable smart TV with Android TV built-in. Full HD display with HDR support for vivid colors.',
+    category: 'televisions', price_ghs: 1800, original_price: 2100,
+    images: ['/placeholder-tv.jpg'],
+    specs: { 'Screen Size': '43"', 'Resolution': 'Full HD (1920x1080)', 'Smart TV': 'Yes', 'HDMI': '2 ports', 'Warranty': '1 Year' },
+    stock: 25, featured: false, active: true, created_at: '2026-01-01'
+  },
+  {
+    id: '4', name: 'LG 1.5HP Split Air Conditioner', slug: 'lg-1-5hp-split-ac',
+    description: 'Dual inverter technology for energy savings. Fast cooling with auto clean function and quiet operation.',
+    category: 'air-conditioners', price_ghs: 3200, original_price: 3800,
+    images: ['/placeholder-ac.jpg'],
+    specs: { 'Capacity': '1.5 HP', 'Type': 'Split', 'Energy Rating': '5 Star', 'Cooling Area': '150-200 sq ft', 'Warranty': '5 Years Compressor' },
+    stock: 12, featured: true, active: true, created_at: '2026-01-01'
+  },
+  {
+    id: '5', name: 'Samsung 2HP Inverter AC', slug: 'samsung-2hp-inverter-ac',
+    description: 'WindFree cooling technology. Powerful 2HP capacity with digital inverter for maximum energy efficiency.',
+    category: 'air-conditioners', price_ghs: 4800, original_price: 5500,
+    images: ['/placeholder-ac.jpg'],
+    specs: { 'Capacity': '2.0 HP', 'Type': 'Split Inverter', 'Energy Rating': '5 Star', 'Cooling Area': '250-350 sq ft', 'Warranty': '10 Years Compressor' },
+    stock: 6, featured: false, active: true, created_at: '2026-01-01'
+  },
+  {
+    id: '6', name: 'Midea 1HP Window AC', slug: 'midea-1hp-window-ac',
+    description: 'Affordable cooling solution for small rooms. Easy installation and reliable performance.',
+    category: 'air-conditioners', price_ghs: 1500, original_price: null,
+    images: ['/placeholder-ac.jpg'],
+    specs: { 'Capacity': '1.0 HP', 'Type': 'Window', 'Energy Rating': '3 Star', 'Cooling Area': '100-150 sq ft', 'Warranty': '3 Years Compressor' },
+    stock: 20, featured: false, active: true, created_at: '2026-01-01'
+  },
+  {
+    id: '7', name: 'Samsung 450L Double Door Fridge', slug: 'samsung-450l-double-door-fridge',
+    description: 'Spacious double door refrigerator with digital inverter. Power freeze, power cool, and humidity-controlled crisper.',
+    category: 'refrigerators', price_ghs: 4200, original_price: 4900,
+    images: ['/placeholder-fridge.jpg'],
+    specs: { 'Capacity': '450 Liters', 'Type': 'Double Door', 'Energy Rating': '4 Star', 'Color': 'Stainless Steel', 'Warranty': '10 Years Compressor' },
+    stock: 10, featured: true, active: true, created_at: '2026-01-01'
+  },
+  {
+    id: '8', name: 'LG 350L Single Door Fridge', slug: 'lg-350l-single-door-fridge',
+    description: 'Smart inverter compressor. Large capacity single door with superb energy efficiency.',
+    category: 'refrigerators', price_ghs: 2800, original_price: 3200,
+    images: ['/placeholder-fridge.jpg'],
+    specs: { 'Capacity': '350 Liters', 'Type': 'Single Door', 'Energy Rating': '5 Star', 'Color': 'Platinum Silver', 'Warranty': '10 Years Compressor' },
+    stock: 18, featured: false, active: true, created_at: '2026-01-01'
+  },
+  {
+    id: '9', name: 'Hisense 7kg Front Load Washer', slug: 'hisense-7kg-front-load-washer',
+    description: 'Front load washing machine with multiple wash programs. Delay start and child lock features.',
+    category: 'washing-machines', price_ghs: 2200, original_price: 2600,
+    images: ['/placeholder-washer.jpg'],
+    specs: { 'Capacity': '7 kg', 'Type': 'Front Load', 'Spin Speed': '1200 RPM', 'Programs': '15', 'Warranty': '2 Years' },
+    stock: 14, featured: false, active: true, created_at: '2026-01-01'
+  },
+  {
+    id: '10', name: 'Samsung 9kg Top Load Washer', slug: 'samsung-9kg-top-load-washer',
+    description: 'Wobble technology for gentle fabric care. Digital inverter motor with quiet operation.',
+    category: 'washing-machines', price_ghs: 3500, original_price: null,
+    images: ['/placeholder-washer.jpg'],
+    specs: { 'Capacity': '9 kg', 'Type': 'Top Load', 'Spin Speed': '700 RPM', 'Programs': '10', 'Warranty': '5 Years Motor' },
+    stock: 9, featured: true, active: true, created_at: '2026-01-01'
+  },
+  {
+    id: '11', name: 'Philips 1.8L Electric Kettle', slug: 'philips-1-8l-electric-kettle',
+    description: 'Stainless steel electric kettle with rapid boil. Auto shut-off and boil-dry protection.',
+    category: 'small-appliances', price_ghs: 180, original_price: 220,
+    images: ['/placeholder-small.jpg'],
+    specs: { 'Capacity': '1.8 Liters', 'Power': '2200W', 'Material': 'Stainless Steel', 'Features': 'Auto Shut-off, Cordless', 'Warranty': '1 Year' },
+    stock: 50, featured: false, active: true, created_at: '2026-01-01'
+  },
+  {
+    id: '12', name: 'Binatone 4-Slice Toaster', slug: 'binatone-4-slice-toaster',
+    description: 'Wide slot toaster with 6 browning levels. Defrost, reheat, and cancel functions.',
+    category: 'small-appliances', price_ghs: 250, original_price: null,
+    images: ['/placeholder-small.jpg'],
+    specs: { 'Slots': '4', 'Power': '1800W', 'Features': 'Defrost, Reheat, Cancel', 'Color': 'Black', 'Warranty': '1 Year' },
+    stock: 35, featured: false, active: true, created_at: '2026-01-01'
+  },
+]

@@ -1,0 +1,19 @@
+﻿-- Migration: Add page-level SEO meta fields to site_settings
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_title TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_description TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_keywords TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS contact_title TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS contact_description TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS contact_keywords TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS faq_title TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS faq_description TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS faq_keywords TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS returns_title TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS returns_description TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS returns_keywords TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS privacy_title TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS privacy_description TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS privacy_keywords TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS terms_title TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS terms_description TEXT;
+ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS terms_keywords TEXT;

@@ -1,0 +1,608 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]: "Cash on Delivery - Pay when you receive your order! | Call/WhatsApp: +233501234567"
+    - generic [ref=e4]:
+      - link "Ghana Appliances" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]: Ghana Appliances
+      - navigation [ref=e7]:
+        - link "Home" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Products" [ref=e9] [cursor=pointer]:
+          - /url: /products
+        - link "Track Order" [ref=e10] [cursor=pointer]:
+          - /url: /track
+        - link "About" [ref=e11] [cursor=pointer]:
+          - /url: /about
+        - link "Contact" [ref=e12] [cursor=pointer]:
+          - /url: /contact
+        - link "Track" [ref=e13] [cursor=pointer]:
+          - /url: /track
+          - img [ref=e14]
+          - text: Track
+      - generic [ref=e17]:
+        - button
+        - button [ref=e18]:
+          - img
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - generic [ref=e22]: 🏠
+        - generic [ref=e23]: 🏠
+      - generic [ref=e25]:
+        - generic [ref=e26]: 🔥 New Arrivals
+        - heading "Premium Home Appliances Delivered Across Ghana" [level=1] [ref=e27]
+        - paragraph [ref=e28]: Shop the latest TVs, ACs, Refrigerators & more. Cash on delivery — pay when it arrives at your doorstep.
+        - generic [ref=e29]:
+          - link "Shop Now" [ref=e30] [cursor=pointer]:
+            - /url: /products
+            - text: Shop Now
+            - img [ref=e31]
+          - link "Contact Us" [ref=e33] [cursor=pointer]:
+            - /url: /contact
+        - generic [ref=e34]:
+          - button [ref=e35]
+          - button [ref=e36]
+          - button [ref=e37]
+    - generic [ref=e41]:
+      - generic [ref=e42]:
+        - img [ref=e44]
+        - generic [ref=e49]:
+          - paragraph [ref=e50]: Cash on Delivery
+          - paragraph [ref=e51]: Pay only when you receive your order — nationwide
+      - generic [ref=e52]:
+        - img [ref=e54]
+        - generic [ref=e57]:
+          - paragraph [ref=e58]: 100% Authentic
+          - paragraph [ref=e59]: Genuine branded appliances with manufacturer warranty
+      - generic [ref=e60]:
+        - img [ref=e62]
+        - generic [ref=e67]:
+          - paragraph [ref=e68]: Easy Returns
+          - paragraph [ref=e69]: 7-day hassle-free return policy on all items
+      - generic [ref=e70]:
+        - img [ref=e72]
+        - generic [ref=e74]:
+          - paragraph [ref=e75]: 24/7 Support
+          - paragraph [ref=e76]: Call or WhatsApp us anytime — we are here to help
+    - generic [ref=e77]:
+      - generic [ref=e78]:
+        - heading "Shop by Category" [level=2] [ref=e79]
+        - paragraph [ref=e80]: Find the perfect appliance for every room in your home
+      - generic [ref=e81]:
+        - link "📺 Televisions 4K, OLED, Smart TVs" [ref=e82] [cursor=pointer]:
+          - /url: /products?category=televisions
+          - generic [ref=e84]: 📺
+          - heading "Televisions" [level=3] [ref=e85]
+          - paragraph [ref=e86]: 4K, OLED, Smart TVs
+        - link "❄️ Air Conditioners Split, Inverter, Window ACs" [ref=e87] [cursor=pointer]:
+          - /url: /products?category=air-conditioners
+          - generic [ref=e89]: ❄️
+          - heading "Air Conditioners" [level=3] [ref=e90]
+          - paragraph [ref=e91]: Split, Inverter, Window ACs
+        - link "🧊 Refrigerators French Door, Side-by-Side" [ref=e92] [cursor=pointer]:
+          - /url: /products?category=refrigerators
+          - generic [ref=e94]: 🧊
+          - heading "Refrigerators" [level=3] [ref=e95]
+          - paragraph [ref=e96]: French Door, Side-by-Side
+        - link "🫧 Washing Machines Front Load, Top Load, Twin Tub" [ref=e97] [cursor=pointer]:
+          - /url: /products?category=washing-machines
+          - generic [ref=e99]: 🫧
+          - heading "Washing Machines" [level=3] [ref=e100]
+          - paragraph [ref=e101]: Front Load, Top Load, Twin Tub
+        - link "🔌 Small Appliances Kettles, Irons, Blenders & more" [ref=e102] [cursor=pointer]:
+          - /url: /products?category=small-appliances
+          - generic [ref=e104]: 🔌
+          - heading "Small Appliances" [level=3] [ref=e105]
+          - paragraph [ref=e106]: Kettles, Irons, Blenders & more
+    - generic [ref=e108]:
+      - generic [ref=e109]:
+        - generic [ref=e110]:
+          - generic [ref=e111]:
+            - img [ref=e112]
+            - heading "Deals of the Day" [level=2] [ref=e114]
+          - paragraph [ref=e115]: Limited-time offers — grab them before they are gone!
+        - generic [ref=e117]:
+          - generic [ref=e118]:
+            - generic [ref=e119]: "00"
+            - generic [ref=e120]: Hrs
+          - generic [ref=e121]:
+            - generic [ref=e122]: "00"
+            - generic [ref=e123]: Min
+          - generic [ref=e124]:
+            - generic [ref=e125]: "00"
+            - generic [ref=e126]: Sec
+      - generic [ref=e127]:
+        - generic [ref=e128]:
+          - button [ref=e129]:
+            - img [ref=e130]
+          - button [ref=e132]:
+            - img [ref=e133]
+          - link "馃摝 -11% Only 5 left" [ref=e138] [cursor=pointer]:
+            - /url: /products/bosch-9kg-front-load-washing-machine
+            - generic [ref=e139]:
+              - generic [ref=e140]: 馃摝
+              - generic [ref=e141]: "-11%"
+              - generic [ref=e142]: Only 5 left
+              - button [ref=e143]:
+                - img [ref=e144]
+          - generic [ref=e147]:
+            - paragraph [ref=e148]: washing machines
+            - link "Bosch 9kg Front Load Washing Machine" [ref=e149] [cursor=pointer]:
+              - /url: /products/bosch-9kg-front-load-washing-machine
+              - heading "Bosch 9kg Front Load Washing Machine" [level=3] [ref=e150]
+            - generic [ref=e151]:
+              - generic [ref=e152]: GH₵ 5,500
+              - generic [ref=e153]: GH₵ 6,200
+            - generic [ref=e154]:
+              - button "Cart" [ref=e155]:
+                - img
+                - text: Cart
+              - button "Buy Now" [ref=e156]:
+                - img
+                - text: Buy Now
+        - generic [ref=e157]:
+          - button [ref=e158]:
+            - img [ref=e159]
+          - button [ref=e161]:
+            - img [ref=e162]
+          - link "馃摝 -14%" [ref=e167] [cursor=pointer]:
+            - /url: /products/samsung-7kg-top-load-washing-machine
+            - generic [ref=e168]:
+              - generic [ref=e169]: 馃摝
+              - generic [ref=e170]: "-14%"
+              - button [ref=e171]:
+                - img [ref=e172]
+          - generic [ref=e175]:
+            - paragraph [ref=e176]: washing machines
+            - link "Samsung 7kg Top Load Washing Machine" [ref=e177] [cursor=pointer]:
+              - /url: /products/samsung-7kg-top-load-washing-machine
+              - heading "Samsung 7kg Top Load Washing Machine" [level=3] [ref=e178]
+            - generic [ref=e179]:
+              - generic [ref=e180]: GH₵ 1,800
+              - generic [ref=e181]: GH₵ 2,100
+            - generic [ref=e182]:
+              - button "Cart" [ref=e183]:
+                - img
+                - text: Cart
+              - button "Buy Now" [ref=e184]:
+                - img
+                - text: Buy Now
+        - generic [ref=e185]:
+          - button [ref=e186]:
+            - img [ref=e187]
+          - button [ref=e189]:
+            - img [ref=e190]
+          - link "馃摝 -10%" [ref=e195] [cursor=pointer]:
+            - /url: /products/lg-8kg-front-load-washer-ai-dd
+            - generic [ref=e196]:
+              - generic [ref=e197]: 馃摝
+              - generic [ref=e198]: "-10%"
+              - button [ref=e199]:
+                - img [ref=e200]
+          - generic [ref=e203]:
+            - paragraph [ref=e204]: washing machines
+            - link "LG 8kg Front Load Washer with AI DD" [ref=e205] [cursor=pointer]:
+              - /url: /products/lg-8kg-front-load-washer-ai-dd
+              - heading "LG 8kg Front Load Washer with AI DD" [level=3] [ref=e206]
+            - generic [ref=e207]:
+              - generic [ref=e208]: GH₵ 3,800
+              - generic [ref=e209]: GH₵ 4,200
+            - generic [ref=e210]:
+              - button "Cart" [ref=e211]:
+                - img
+                - text: Cart
+              - button "Buy Now" [ref=e212]:
+                - img
+                - text: Buy Now
+        - generic [ref=e213]:
+          - button [ref=e214]:
+            - img [ref=e215]
+          - button [ref=e217]:
+            - img [ref=e218]
+          - link "馃摝 -15%" [ref=e223] [cursor=pointer]:
+            - /url: /products/nexus-200l-single-door-refrigerator
+            - generic [ref=e224]:
+              - generic [ref=e225]: 馃摝
+              - generic [ref=e226]: "-15%"
+              - button [ref=e227]:
+                - img [ref=e228]
+          - generic [ref=e231]:
+            - paragraph [ref=e232]: refrigerators
+            - link "Nexus 200L Single Door Refrigerator" [ref=e233] [cursor=pointer]:
+              - /url: /products/nexus-200l-single-door-refrigerator
+              - heading "Nexus 200L Single Door Refrigerator" [level=3] [ref=e234]
+            - generic [ref=e235]:
+              - generic [ref=e236]: GH₵ 850
+              - generic [ref=e237]: GH₵ 1,000
+            - generic [ref=e238]:
+              - button "Cart" [ref=e239]:
+                - img
+                - text: Cart
+              - button "Buy Now" [ref=e240]:
+                - img
+                - text: Buy Now
+      - link "View All Deals" [ref=e242] [cursor=pointer]:
+        - /url: /products
+        - text: View All Deals
+        - img [ref=e243]
+    - generic [ref=e245]:
+      - generic [ref=e246]:
+        - heading "Featured Products" [level=2] [ref=e247]
+        - paragraph [ref=e248]: Our most popular and recommended appliances
+      - generic [ref=e249]:
+        - generic [ref=e250]:
+          - button [ref=e251]:
+            - img [ref=e252]
+          - button [ref=e254]:
+            - img [ref=e255]
+          - link "馃摝 -11% Only 5 left" [ref=e260] [cursor=pointer]:
+            - /url: /products/bosch-9kg-front-load-washing-machine
+            - generic [ref=e261]:
+              - generic [ref=e262]: 馃摝
+              - generic [ref=e263]: "-11%"
+              - generic [ref=e264]: Only 5 left
+              - button [ref=e265]:
+                - img [ref=e266]
+          - generic [ref=e269]:
+            - paragraph [ref=e270]: washing machines
+            - link "Bosch 9kg Front Load Washing Machine" [ref=e271] [cursor=pointer]:
+              - /url: /products/bosch-9kg-front-load-washing-machine
+              - heading "Bosch 9kg Front Load Washing Machine" [level=3] [ref=e272]
+            - generic [ref=e273]:
+              - generic [ref=e274]: GH₵ 5,500
+              - generic [ref=e275]: GH₵ 6,200
+            - generic [ref=e276]:
+              - button "Cart" [ref=e277]:
+                - img
+                - text: Cart
+              - button "Buy Now" [ref=e278]:
+                - img
+                - text: Buy Now
+        - generic [ref=e279]:
+          - button [ref=e280]:
+            - img [ref=e281]
+          - button [ref=e283]:
+            - img [ref=e284]
+          - link "馃摝 -10%" [ref=e289] [cursor=pointer]:
+            - /url: /products/lg-8kg-front-load-washer-ai-dd
+            - generic [ref=e290]:
+              - generic [ref=e291]: 馃摝
+              - generic [ref=e292]: "-10%"
+              - button [ref=e293]:
+                - img [ref=e294]
+          - generic [ref=e297]:
+            - paragraph [ref=e298]: washing machines
+            - link "LG 8kg Front Load Washer with AI DD" [ref=e299] [cursor=pointer]:
+              - /url: /products/lg-8kg-front-load-washer-ai-dd
+              - heading "LG 8kg Front Load Washer with AI DD" [level=3] [ref=e300]
+            - generic [ref=e301]:
+              - generic [ref=e302]: GH₵ 3,800
+              - generic [ref=e303]: GH₵ 4,200
+            - generic [ref=e304]:
+              - button "Cart" [ref=e305]:
+                - img
+                - text: Cart
+              - button "Buy Now" [ref=e306]:
+                - img
+                - text: Buy Now
+        - generic [ref=e307]:
+          - button [ref=e308]:
+            - img [ref=e309]
+          - button [ref=e311]:
+            - img [ref=e312]
+          - link "馃摝 -10% Only 5 left" [ref=e317] [cursor=pointer]:
+            - /url: /products/samsung-620l-side-by-side-refrigerator
+            - generic [ref=e318]:
+              - generic [ref=e319]: 馃摝
+              - generic [ref=e320]: "-10%"
+              - generic [ref=e321]: Only 5 left
+              - button [ref=e322]:
+                - img [ref=e323]
+          - generic [ref=e326]:
+            - paragraph [ref=e327]: refrigerators
+            - link "Samsung 620L Side-by-Side Refrigerator" [ref=e328] [cursor=pointer]:
+              - /url: /products/samsung-620l-side-by-side-refrigerator
+              - heading "Samsung 620L Side-by-Side Refrigerator" [level=3] [ref=e329]
+            - generic [ref=e330]:
+              - generic [ref=e331]: GH₵ 9,500
+              - generic [ref=e332]: GH₵ 10,500
+            - generic [ref=e333]:
+              - button "Cart" [ref=e334]:
+                - img
+                - text: Cart
+              - button "Buy Now" [ref=e335]:
+                - img
+                - text: Buy Now
+        - generic [ref=e336]:
+          - button [ref=e337]:
+            - img [ref=e338]
+          - button [ref=e340]:
+            - img [ref=e341]
+          - link "馃摝 -10%" [ref=e346] [cursor=pointer]:
+            - /url: /products/samsung-450l-french-door-refrigerator
+            - generic [ref=e347]:
+              - generic [ref=e348]: 馃摝
+              - generic [ref=e349]: "-10%"
+              - button [ref=e350]:
+                - img [ref=e351]
+          - generic [ref=e354]:
+            - paragraph [ref=e355]: refrigerators
+            - link "Samsung 450L French Door Refrigerator" [ref=e356] [cursor=pointer]:
+              - /url: /products/samsung-450l-french-door-refrigerator
+              - heading "Samsung 450L French Door Refrigerator" [level=3] [ref=e357]
+            - generic [ref=e358]:
+              - generic [ref=e359]: GH₵ 6,500
+              - generic [ref=e360]: GH₵ 7,200
+            - generic [ref=e361]:
+              - button "Cart" [ref=e362]:
+                - img
+                - text: Cart
+              - button "Buy Now" [ref=e363]:
+                - img
+                - text: Buy Now
+        - generic [ref=e364]:
+          - button [ref=e365]:
+            - img [ref=e366]
+          - button [ref=e368]:
+            - img [ref=e369]
+          - link "馃摝 -12%" [ref=e374] [cursor=pointer]:
+            - /url: /products/gree-1hp-inverter-split-ac
+            - generic [ref=e375]:
+              - generic [ref=e376]: 馃摝
+              - generic [ref=e377]: "-12%"
+              - button [ref=e378]:
+                - img [ref=e379]
+          - generic [ref=e382]:
+            - paragraph [ref=e383]: air conditioners
+            - link "Gree 1HP Inverter Split AC" [ref=e384] [cursor=pointer]:
+              - /url: /products/gree-1hp-inverter-split-ac
+              - heading "Gree 1HP Inverter Split AC" [level=3] [ref=e385]
+            - generic [ref=e386]:
+              - generic [ref=e387]: GH₵ 1,500
+              - generic [ref=e388]: GH₵ 1,700
+            - generic [ref=e389]:
+              - button "Cart" [ref=e390]:
+                - img
+                - text: Cart
+              - button "Buy Now" [ref=e391]:
+                - img
+                - text: Buy Now
+        - generic [ref=e392]:
+          - button [ref=e393]:
+            - img [ref=e394]
+          - button [ref=e396]:
+            - img [ref=e397]
+          - link "馃摝 -16%" [ref=e402] [cursor=pointer]:
+            - /url: /products/lg-1-5hp-dual-inverter-split-ac
+            - generic [ref=e403]:
+              - generic [ref=e404]: 馃摝
+              - generic [ref=e405]: "-16%"
+              - button [ref=e406]:
+                - img [ref=e407]
+          - generic [ref=e410]:
+            - paragraph [ref=e411]: air conditioners
+            - link "LG 1.5HP Dual Inverter Split AC" [ref=e412] [cursor=pointer]:
+              - /url: /products/lg-1-5hp-dual-inverter-split-ac
+              - heading "LG 1.5HP Dual Inverter Split AC" [level=3] [ref=e413]
+            - generic [ref=e414]:
+              - generic [ref=e415]: GH₵ 3,200
+              - generic [ref=e416]: GH₵ 3,800
+            - generic [ref=e417]:
+              - button "Cart" [ref=e418]:
+                - img
+                - text: Cart
+              - button "Buy Now" [ref=e419]:
+                - img
+                - text: Buy Now
+        - generic [ref=e420]:
+          - button [ref=e421]:
+            - img [ref=e422]
+          - button [ref=e424]:
+            - img [ref=e425]
+          - link "馃摝 -11%" [ref=e430] [cursor=pointer]:
+            - /url: /products/hisense-75-u7k-miniled-4k-tv
+            - generic [ref=e431]:
+              - generic [ref=e432]: 馃摝
+              - generic [ref=e433]: "-11%"
+              - button [ref=e434]:
+                - img [ref=e435]
+          - generic [ref=e438]:
+            - paragraph [ref=e439]: televisions
+            - link "Hisense 75 U7K Mini-LED 4K Google TV" [ref=e440] [cursor=pointer]:
+              - /url: /products/hisense-75-u7k-miniled-4k-tv
+              - heading "Hisense 75 U7K Mini-LED 4K Google TV" [level=3] [ref=e441]
+            - generic [ref=e442]:
+              - generic [ref=e443]: GH₵ 8,500
+              - generic [ref=e444]: GH₵ 9,500
+            - generic [ref=e445]:
+              - button "Cart" [ref=e446]:
+                - img
+                - text: Cart
+              - button "Buy Now" [ref=e447]:
+                - img
+                - text: Buy Now
+        - generic [ref=e448]:
+          - button [ref=e449]:
+            - img [ref=e450]
+          - button [ref=e452]:
+            - img [ref=e453]
+          - link "馃摝 -11%" [ref=e458] [cursor=pointer]:
+            - /url: /products/lg-65-oled-evo-c4-smart-tv
+            - generic [ref=e459]:
+              - generic [ref=e460]: 馃摝
+              - generic [ref=e461]: "-11%"
+              - button [ref=e462]:
+                - img [ref=e463]
+          - generic [ref=e466]:
+            - paragraph [ref=e467]: televisions
+            - link "LG 65 OLED evo C4 Smart TV" [ref=e468] [cursor=pointer]:
+              - /url: /products/lg-65-oled-evo-c4-smart-tv
+              - heading "LG 65 OLED evo C4 Smart TV" [level=3] [ref=e469]
+            - generic [ref=e470]:
+              - generic [ref=e471]: GH₵ 12,500
+              - generic [ref=e472]: GH₵ 14,000
+            - generic [ref=e473]:
+              - button "Cart" [ref=e474]:
+                - img
+                - text: Cart
+              - button "Buy Now" [ref=e475]:
+                - img
+                - text: Buy Now
+      - link "View All Products" [ref=e477] [cursor=pointer]:
+        - /url: /products
+        - text: View All Products
+        - img [ref=e478]
+    - generic [ref=e481]:
+      - generic [ref=e482]:
+        - heading "Why Choose Ghana Appliances?" [level=2] [ref=e483]
+        - paragraph [ref=e484]: We are committed to bringing you the best shopping experience
+      - generic [ref=e485]:
+        - generic [ref=e486]:
+          - img [ref=e488]
+          - heading "Genuine Products" [level=3] [ref=e491]
+          - paragraph [ref=e492]: Every product we sell is 100% authentic with full manufacturer warranty. No counterfeits, ever.
+        - generic [ref=e493]:
+          - img [ref=e495]
+          - heading "Fast Delivery" [level=3] [ref=e500]
+          - paragraph [ref=e501]: Orders within Greater Accra delivered in 1-2 days. Nationwide shipping to all 16 regions of Ghana.
+        - generic [ref=e502]:
+          - img [ref=e504]
+          - heading "Easy Returns" [level=3] [ref=e509]
+          - paragraph [ref=e510]: Not satisfied? Return within 7 days for a full refund or exchange. No questions asked.
+        - generic [ref=e511]:
+          - img [ref=e513]
+          - heading "Best Prices" [level=3] [ref=e516]
+          - paragraph [ref=e517]: We monitor the market to ensure you get the most competitive prices on all major appliance brands.
+    - generic [ref=e520]:
+      - generic [ref=e521]:
+        - img [ref=e522]
+        - paragraph [ref=e526]: 500+
+        - paragraph [ref=e527]: Products Sold
+      - generic [ref=e528]:
+        - img [ref=e529]
+        - paragraph [ref=e534]: 200+
+        - paragraph [ref=e535]: Happy Customers
+      - generic [ref=e536]:
+        - img [ref=e537]
+        - paragraph [ref=e540]: 10+
+        - paragraph [ref=e541]: Brands Available
+      - generic [ref=e542]:
+        - img [ref=e543]
+        - paragraph [ref=e545]: 99%
+        - paragraph [ref=e546]: Satisfaction Rate
+    - generic [ref=e547]:
+      - generic [ref=e548]:
+        - heading "What Our Customers Say" [level=2] [ref=e549]
+        - paragraph [ref=e550]: Trusted by hundreds of Ghanaian households
+      - generic [ref=e551]:
+        - generic [ref=e552]:
+          - generic [ref=e553]:
+            - img [ref=e554]
+            - img [ref=e556]
+            - img [ref=e558]
+            - img [ref=e560]
+            - img [ref=e562]
+          - paragraph [ref=e564]: "\"Ordered a Samsung TV and it arrived within 2 days. The delivery team was professional and the product is genuine. Highly recommend!\""
+          - generic [ref=e565]:
+            - generic [ref=e566]: A
+            - generic [ref=e567]:
+              - paragraph [ref=e568]: Akua M.
+              - paragraph [ref=e569]: Accra
+        - generic [ref=e570]:
+          - generic [ref=e571]:
+            - img [ref=e572]
+            - img [ref=e574]
+            - img [ref=e576]
+            - img [ref=e578]
+            - img [ref=e580]
+          - paragraph [ref=e582]: "\"Best prices on air conditioners in Ghana. I saved over GH₵ 500 compared to other shops. Installation was smooth.\""
+          - generic [ref=e583]:
+            - generic [ref=e584]: K
+            - generic [ref=e585]:
+              - paragraph [ref=e586]: Kwame O.
+              - paragraph [ref=e587]: Kumasi
+        - generic [ref=e588]:
+          - generic [ref=e589]:
+            - img [ref=e590]
+            - img [ref=e592]
+            - img [ref=e594]
+            - img [ref=e596]
+            - img [ref=e598]
+          - paragraph [ref=e600]: "\"Their COD option saved me. I could inspect the fridge before paying. Great customer service via WhatsApp.\""
+          - generic [ref=e601]:
+            - generic [ref=e602]: A
+            - generic [ref=e603]:
+              - paragraph [ref=e604]: Abena D.
+              - paragraph [ref=e605]: Tema
+    - generic [ref=e607]:
+      - heading "Ready to Upgrade Your Home?" [level=2] [ref=e608]
+      - paragraph [ref=e609]: Browse our collection of quality appliances. No payment needed until delivery — shop with confidence.
+      - generic [ref=e610]:
+        - link "View All Products" [ref=e611] [cursor=pointer]:
+          - /url: /products
+        - link "Contact Us" [ref=e612] [cursor=pointer]:
+          - /url: /contact
+  - contentinfo [ref=e613]:
+    - generic [ref=e614]:
+      - generic [ref=e615]:
+        - heading "Ghana Appliances" [level=3] [ref=e616]
+        - paragraph [ref=e617]: Quality electrical appliances delivered to your doorstep.
+      - generic [ref=e618]:
+        - heading "Shop" [level=4] [ref=e619]
+        - list [ref=e620]:
+          - listitem [ref=e621]:
+            - link "All Products" [ref=e622] [cursor=pointer]:
+              - /url: /products
+          - listitem [ref=e623]:
+            - link "Televisions" [ref=e624] [cursor=pointer]:
+              - /url: /products?category=televisions
+          - listitem [ref=e625]:
+            - link "Air Conditioners" [ref=e626] [cursor=pointer]:
+              - /url: /products?category=air-conditioners
+          - listitem [ref=e627]:
+            - link "Refrigerators" [ref=e628] [cursor=pointer]:
+              - /url: /products?category=refrigerators
+      - generic [ref=e629]:
+        - heading "Support" [level=4] [ref=e630]
+        - list [ref=e631]:
+          - listitem [ref=e632]:
+            - link "Track Order" [ref=e633] [cursor=pointer]:
+              - /url: /track
+          - listitem [ref=e634]:
+            - link "Contact Us" [ref=e635] [cursor=pointer]:
+              - /url: /contact
+          - listitem [ref=e636]:
+            - link "FAQ" [ref=e637] [cursor=pointer]:
+              - /url: /faq
+          - listitem [ref=e638]:
+            - link "About Us" [ref=e639] [cursor=pointer]:
+              - /url: /about
+      - generic [ref=e640]:
+        - heading "Policies" [level=4] [ref=e641]
+        - list [ref=e642]:
+          - listitem [ref=e643]:
+            - link "Returns Policy" [ref=e644] [cursor=pointer]:
+              - /url: /returns
+          - listitem [ref=e645]:
+            - link "Privacy Policy" [ref=e646] [cursor=pointer]:
+              - /url: /privacy
+          - listitem [ref=e647]:
+            - link "Terms & Conditions" [ref=e648] [cursor=pointer]:
+              - /url: /terms
+      - generic [ref=e649]:
+        - heading "Contact" [level=4] [ref=e650]
+        - list [ref=e651]:
+          - listitem [ref=e652]:
+            - img [ref=e653]
+            - text: "+233501234567"
+          - listitem [ref=e655]:
+            - img [ref=e656]
+            - text: info@ghanaappliance.cc
+          - listitem [ref=e659]:
+            - img [ref=e660]
+            - text: Accra, Ghana
+    - generic [ref=e663]: © 2026 Ghana Appliances. COD available nationwide.
+  - button [ref=e665]:
+    - img [ref=e666]
+  - region "Notifications alt+T"
