@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import Breadcrumbs from "@/components/Breadcrumbs"
 import { toast } from "sonner"
-import { MetaPixel } from "@/lib/pixel"
+import { MetaPixel, TikTokPixel } from "@/lib/pixel"
 export default function ContactPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -33,7 +33,7 @@ export default function ContactPage() {
       })
       if (res.ok) {
         setSent(true)
-        try { MetaPixel.contact() } catch (_) {}
+        try { MetaPixel.contact() } catch (_) {} try { TikTokPixel.contact() } catch (_) {}
         toast.success("Message sent! We will get back to you soon.")
       } else {
         toast.error("Failed to send. Please try again.")
@@ -55,19 +55,19 @@ export default function ContactPage() {
         <div className="space-y-4">
           <div className="flex items-center gap-3 p-4 bg-white border rounded-xl">
             <Phone className="h-5 w-5 text-amber-500 flex-shrink-0" />
-            <div><p className="font-medium">Phone</p><p className="text-gray-500">0501234567</p></div>
+            <div><p className="font-medium">Phone</p><p className="text-gray-500 break-words">0501234567</p></div>
           </div>
           <div className="flex items-center gap-3 p-4 bg-white border rounded-xl">
             <MessageCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-            <div><p className="font-medium">WhatsApp</p><p className="text-gray-500">0501234567</p></div>
+            <div><p className="font-medium">WhatsApp</p><p className="text-gray-500 break-words">0501234567</p></div>
           </div>
           <div className="flex items-center gap-3 p-4 bg-white border rounded-xl">
             <Mail className="h-5 w-5 text-amber-500 flex-shrink-0" />
-            <div><p className="font-medium">Email</p><p className="text-gray-500">info@ghanaappliance.cc</p></div>
+            <div><p className="font-medium">Email</p><p className="text-gray-500 break-all">info@ghanaappliance.cc</p></div>
           </div>
           <div className="flex items-center gap-3 p-4 bg-white border rounded-xl">
             <MapPin className="h-5 w-5 text-amber-500 flex-shrink-0" />
-            <div><p className="font-medium">Address</p><p className="text-gray-500">Accra, Ghana</p></div>
+            <div><p className="font-medium">Address</p><p className="text-gray-500 break-words">Accra, Ghana</p></div>
           </div>
           <div className="flex items-center gap-3 p-4 bg-white border rounded-xl">
             <Clock className="h-5 w-5 text-amber-500 flex-shrink-0" />

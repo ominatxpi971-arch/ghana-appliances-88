@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useState, useEffect, useMemo, useRef } from "react"
 import { Search } from "lucide-react"
@@ -10,7 +10,7 @@ import Breadcrumbs from "@/components/Breadcrumbs"
 import { ProductListSkeleton } from "@/components/skeletons"
 import { formatPrice } from "@/lib/utils"
 import { Product } from "@/lib/types"
-import { MetaPixel } from "@/lib/pixel"
+import { MetaPixel, TikTokPixel } from "@/lib/pixel"
 import { useAnalytics } from "@/hooks/use-analytics"
 
 const CATEGORIES = [
@@ -71,7 +71,7 @@ export default function ProductsPageClient({ initialProducts }: ProductsPageClie
     if (searchTimer.current) clearTimeout(searchTimer.current)
     if (search.trim().length > 0) {
       searchTimer.current = setTimeout(() => {
-        MetaPixel.search({ search_string: search.trim() })
+        MetaPixel.search({ search_string: search.trim() }); try { TikTokPixel.search({ search_string: search.trim() }) } catch (_) {}
         trackSearch(search.trim(), filtered.length)
       }, 800)
     }
@@ -84,25 +84,25 @@ export default function ProductsPageClient({ initialProducts }: ProductsPageClie
       <h1 className="text-3xl font-bold mb-2">All Products</h1>
       <p className="text-gray-500 mb-6">{filtered.length} products available</p>
 
-      <div className="flex flex-wrap gap-3 mb-8">
-        <div className="relative flex-1 min-w-[200px]">
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 mb-8">
+        <div className="relative flex-1 min-w-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input placeholder="Search products..." className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <Select value={category} onValueChange={(v) => setCategory(v ?? "all")}>
-          <SelectTrigger className="w-[160px]"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-[140px] md:w-[160px]"><SelectValue /></SelectTrigger>
           <SelectContent>{CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={priceRange} onValueChange={(v) => setPriceRange(v ?? "all")}>
-          <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-[160px] md:w-[180px]"><SelectValue /></SelectTrigger>
           <SelectContent>{PRICE_RANGES.map(p => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={brand} onValueChange={(v) => setBrand(v ?? "all")}>
-          <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-[120px] md:w-[140px]"><SelectValue /></SelectTrigger>
           <SelectContent>{BRANDS.map(b => <SelectItem key={b.value} value={b.value}>{b.label}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={sort} onValueChange={(v) => setSort(v ?? "featured")}>
-          <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-[160px] md:w-[180px]"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="featured">Featured</SelectItem>
             <SelectItem value="price-asc">Price: Low to High</SelectItem>

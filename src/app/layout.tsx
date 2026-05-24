@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
@@ -14,7 +14,7 @@ import CookieConsent from "@/components/CookieConsent";
 import TrackingScripts from "@/components/TrackingScripts";
 import { OrganizationSchema, WebSiteSchema, LocalBusinessSchema } from "@/components/StructuredData";
 import { Suspense } from "react"
-import { MetaPixelRouter } from "@/lib/pixel";
+import { MetaPixelRouter, TikTokPixelRouter } from "@/lib/pixel";
 import { SiteSettings } from "@/lib/types";
 import { getSettings } from "@/lib/db";
 
@@ -69,12 +69,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+export const viewport = { width: 'device-width' as const, initialScale: 1, maximumScale: 5, viewportFit: 'cover' as const, themeColor: '#f59e0b' }
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   let settings: SiteSettings | null;
   try { settings = await getSettings(); } catch { settings = null }
   
   return (
-    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
+    <html lang="en" className={`${geistSans.variable} h-full antialiased max-w-full overflow-x-hidden`}>
       <head>
         <TrackingScripts />
         <OrganizationSchema settings={settings as any} />
@@ -94,14 +96,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="Ghana Appliances" />
       </head>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col max-w-full overflow-x-hidden">
         <AuthProvider><CompareProvider><CartProvider>
           <Header />
-          <main className="flex-1 pb-16 md:pb-0">{children}</main>
+          <main className="flex-1 pt-[calc(2rem+4rem)] pb-16 md:pb-0 safe-area-top safe-area-bottom">{children}</main>
           <Footer />
           <WhatsAppFloat />
           <MobileNav />
-          <Toaster position="top-center" richColors /><AnalyticsProvider /><Suspense fallback={null}><MetaPixelRouter /></Suspense><CookieConsent /></CartProvider></CompareProvider></AuthProvider>
+          <Toaster position="top-center" richColors /><AnalyticsProvider /><Suspense fallback={null}><MetaPixelRouter /><TikTokPixelRouter /></Suspense><CookieConsent /></CartProvider></CompareProvider></AuthProvider>
       </body>
     </html>
   );

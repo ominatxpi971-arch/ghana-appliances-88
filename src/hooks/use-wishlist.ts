@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { MetaPixel } from "@/lib/pixel"
+import { MetaPixel, TikTokPixel } from "@/lib/pixel"
 
 const KEY = "ghana-wishlist"
 
@@ -31,7 +31,7 @@ export function useWishlist() {
     const next = current.includes(id) ? current.filter(i => i !== id) : [...current, id]
     save(next)
     if (!current.includes(id)) {
-      try { MetaPixel.addToWishlist({ content_id: id }) } catch (_) {}
+      try { MetaPixel.addToWishlist({ content_id: id }) } catch (_) {} try { TikTokPixel.addToWishlist({ content_id: id }) } catch (_) {}
     }
   }, [])
 

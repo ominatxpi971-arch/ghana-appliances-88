@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/components/shop/auth-context";
 import { useCartContext } from "@/components/shop/cart-context";
-import { MetaPixel } from "@/lib/pixel"
+import { MetaPixel, TikTokPixel } from "@/lib/pixel"
 import { useAnalytics } from "@/hooks/use-analytics";
 import { toast } from "sonner";
 
@@ -29,22 +29,15 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState("");
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "", country: "Ghana",
-    city: "", region: "Greater Accra", address: "", postalCode: ""
+    city: "", address: "", postalCode: ""
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState<string | null>(null);
   const [couponDiscount, setCouponDiscount] = useState(0);
-  const [deliveryFees, setDeliveryFees] = useState<Record<string, number>>({})
-
   const hasFiredCheckout = useRef(false);
 
-  const DEFAULT_FEES: Record<string, number> = {
-    "Greater Accra":0,"Ashanti":50,"Western":80,"Central":70,"Eastern":60,"Volta":90,
-    "Northern":120,"Upper East":150,"Upper West":150,"Bono":100,"Bono East":100,
-    "Ahafo":100,"Western North":90,"Oti":100,"Savannah":120,"North East":130,
-  }
-  const deliveryFee = deliveryFees[form.region] ?? DEFAULT_FEES[form.region] ?? 50
+  const deliveryFee = 0
   const finalTotal = total - couponDiscount + deliveryFee;
 
   // Track InitiateCheckout ? fires once when valid cart data loads
@@ -61,20 +54,18 @@ export default function CheckoutPage() {
           value: finalTotal,
           currency: "GHS",
         });
+        try {
+          TikTokPixel.initiateCheckout({
+            contents: items.map(i => ({ content_id: i.product.id, content_name: i.product.name, quantity: i.quantity, price: i.product.price_ghs })),
+            value: finalTotal,
+            currency: "GHS",
+          });
+        } catch (_) {} 
       } catch (_) {
         // silently ignore pixel errors
       }
     }
   }, [itemCount, finalTotal, items, couponDiscount]);
-  // Fetch shipping fees from settings
-  useEffect(() => {
-    fetch("/api/settings").then(r => r.json()).then(data => {
-      try {
-        const fees = JSON.parse(data.shipping_fees || "{}")
-        if (typeof fees === "object") setDeliveryFees(fees)
-      } catch {}
-    }).catch(() => {})
-  }, [])
 
 
 
@@ -108,7 +99,6 @@ export default function CheckoutPage() {
     if (!form.phone.trim()) e.phone = "Required";
     if (!form.country.trim()) e.country = "Required";
     if (!form.city.trim()) e.city = "Required";
-    if (!form.region) e.region = "Region is required";
     if (!form.address.trim()) e.address = "Required";
     if (!form.postalCode.trim()) e.postalCode = "Required";
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Invalid email";
@@ -138,12 +128,11 @@ export default function CheckoutPage() {
           altPhone: "",
           email: form.email,
           city: form.city,
-          region: form.region,
           address: fullAddress,
           deliveryTime: "any",
           notes: ""
         },
-        items: items.map(i => ({ productId: i.product.id, quantity: i.quantity })),
+        items: items.map(i => ({ productId: i.product.id, quantity: i.quantity, variantId: i.variant_id || undefined, variantName: i.variant?.name || undefined, variantSku: i.variant?.sku || undefined })),
         couponCode: couponApplied,
         userId: user?.id || null
       };
@@ -179,6 +168,14 @@ export default function CheckoutPage() {
             currency: "GHS",
             order_id: String(data.id)
           });
+          try {
+            TikTokPixel.purchase({
+              contents: items.map(i => ({ content_id: i.product.id, content_name: i.product.name, quantity: i.quantity, price: i.product.price_ghs })),
+              value: finalTotal,
+              currency: "GHS",
+              order_id: String(data.id),
+            });
+          } catch (_) {} 
         } catch (e) { /* silent */ }
       }
     } catch (e: any) {
@@ -304,24 +301,6 @@ export default function CheckoutPage() {
               </div>
             </div>
             <div className="space-y-1.5">
-              <div className="space-y-1.5">
-                <Label>Region *</Label>
-                <select
-                  value={form.region}
-                  onChange={e => setField("region", e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 text-sm bg-white"
-                >
-                  {Object.keys(deliveryFees).length > 0
-                    ? Object.keys(deliveryFees).sort().map(r => (
-                      <option key={r} value={r}>{r} — GHS {deliveryFees[r]}</option>
-                    ))
-                    : Object.keys(DEFAULT_FEES).sort().map(r => (
-                      <option key={r} value={r}>{r} — GHS {DEFAULT_FEES[r]}</option>
-                    ))
-                  }
-                </select>
-              </div>
-              <Label>Postal Code / Zip Code *</Label>
               <Input placeholder="GA-123-4567" value={form.postalCode}
                 onChange={e => setField("postalCode", e.target.value)}
                 className={errors.postalCode ? "border-red-500" : ""} />

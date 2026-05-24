@@ -130,3 +130,141 @@ export const MetaPixel = {
     }))
   },
 }
+
+// TikTok Pixel helpers
+function ttq(event: string, ...args: unknown[]) {
+  const t = (window as Window & { ttq?: (...args: unknown[]) => void }).ttq
+  if (typeof t !== "function") return
+  try { t(event, ...args) } catch { /* prevent pixel errors from crashing the app */ }
+}
+
+function cleanTikTokParams(params: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined && v !== null))
+}
+
+// Track PageView on route change for TikTok
+export function TikTokPixelRouter() {
+  const pathname = usePathname()
+  const lastPath = useRef(pathname)
+
+  useEffect(() => {
+    if (lastPath.current === pathname) return
+    lastPath.current = pathname
+    ttq("page")
+  }, [pathname])
+
+  return null
+}
+
+export const TikTokPixel = {
+  pageView() { ttq("page") },
+
+  viewContent(params: {
+    content_id?: string
+    content_name?: string
+    content_category?: string
+    value?: number
+    currency?: string
+  }) {
+    ttq("track", "ViewContent", cleanTikTokParams({
+      content_id: params.content_id,
+      content_name: params.content_name,
+      content_category: params.content_category,
+      value: params.value,
+      currency: params.currency || "GHS",
+    }))
+  },
+
+  addToCart(params: {
+    content_id?: string
+    content_name?: string
+    content_type?: string
+    value?: number
+    currency?: string
+    quantity?: number
+  }) {
+    ttq("track", "AddToCart", cleanTikTokParams({
+      content_id: params.content_id,
+      content_name: params.content_name,
+      content_type: params.content_type || "product",
+      value: params.value,
+      currency: params.currency || "GHS",
+      quantity: params.quantity,
+    }))
+  },
+
+  initiateCheckout(params: {
+    content_id?: string
+    content_type?: string
+    quantity?: number
+    value?: number
+    currency?: string
+    description?: string
+    contents?: { content_id: string; content_name?: string; quantity: number; price?: number }[]
+  }) {
+    ttq("track", "InitiateCheckout", cleanTikTokParams({
+      content_id: params.content_id,
+      content_type: params.content_type || "product",
+      quantity: params.quantity,
+      value: params.value,
+      currency: params.currency || "GHS",
+      description: params.description,
+      contents: params.contents,
+    }))
+  },
+
+  purchase(params: {
+    content_id?: string
+    content_type?: string
+    value: number
+    currency?: string
+    order_id?: string
+    quantity?: number
+    description?: string
+    contents?: { content_id: string; content_name?: string; quantity: number; price?: number }[]
+  }) {
+    ttq("track", "PlaceAnOrder", cleanTikTokParams({
+      content_id: params.content_id,
+      content_type: params.content_type || "product",
+      value: params.value,
+      currency: params.currency || "GHS",
+      order_id: params.order_id,
+      quantity: params.quantity,
+      description: params.description,
+      contents: params.contents,
+    }))
+  },
+
+  search(params: { search_string?: string }) {
+    ttq("track", "Search", params)
+  },
+
+  contact() {
+    ttq("track", "Contact")
+  },
+
+  registration() {
+    ttq("track", "CompleteRegistration")
+  },
+
+  submitForm(params: { form_name?: string }) {
+    ttq("track", "SubmitForm", params)
+  },
+
+  addToWishlist(params: {
+    content_id?: string
+    content_name?: string
+    content_category?: string
+    value?: number
+    currency?: string
+  }) {
+    ttq("track", "AddToWishlist", cleanTikTokParams({
+      content_id: params.content_id,
+      content_name: params.content_name,
+      content_category: params.content_category,
+      content_type: "product",
+      value: params.value,
+      currency: params.currency || "GHS",
+    }))
+  },
+}

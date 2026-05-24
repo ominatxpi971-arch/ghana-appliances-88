@@ -1,4 +1,22 @@
-﻿export interface Product {
+
+export interface ProductVariant {
+  id: string
+  product_id: string
+  sku?: string
+  name: string
+  option1_name?: string
+  option1_value?: string
+  option2_name?: string
+  option2_value?: string
+  price_ghs: number
+  stock: number
+  image?: string
+  sort_order: number
+  active: boolean
+  created_at?: string
+}
+
+export interface Product {
    id: string
    name: string
    slug: string
@@ -15,11 +33,15 @@
   seo_title?: string
   seo_description?: string
   seo_keywords?: string
+  variants?: ProductVariant[]
  }
 
 export interface CartItem {
   product: Product
+  variant_id?: string
+  variant?: ProductVariant
   quantity: number
+  variants?: ProductVariant[]
 }
 
 export interface Order {
@@ -51,6 +73,9 @@ export interface OrderItem {
   order_id: string
   product_id: string
   product_name: string
+  variant_id?: string
+  variant_name?: string
+  variant_sku?: string
   quantity: number
   unit_price: number
 }
@@ -135,6 +160,7 @@ export interface SiteSettings {
   resend_api_key?: string
   google_analytics_id?: string
   meta_pixel_id?: string
+  tiktok_pixel_id?: string
   meta_pixel_access_token?: string
   
   // Social/contact

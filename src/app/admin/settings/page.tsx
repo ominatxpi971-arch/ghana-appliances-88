@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
@@ -15,7 +15,7 @@ interface Settings {
   email: string; address: string; logo_url: string; currency: string; cod_label: string
   hero_title: string; hero_subtitle: string; hero_badge: string
   seo_title: string; seo_description: string; seo_keywords: string
-  meta_pixel_id: string; meta_pixel_access_token: string; google_analytics_id: string; resend_api_key: string
+  meta_pixel_id: string; meta_pixel_access_token: string; google_analytics_id: string; tiktok_pixel_id: string; resend_api_key: string
   footer_about: string; footer_cod_text: string
   admin_password: string
   // Hero slide fields
@@ -28,9 +28,7 @@ interface Settings {
   hero3_badge: string; hero3_title: string; hero3_highlight: string; hero3_subtitle: string
   hero3_cta: string; hero3_cta_link: string; hero3_bg: string; hero3_accent: string
   hero3_icon: string; hero3_image: string
-  // Shipping fee fields
-  shipping_fees: string
-  // Ad spend data
+// Ad spend data
   ad_spend_data: string
   // Low stock threshold
   low_stock_threshold: string
@@ -50,7 +48,7 @@ const DEFAULTS: any = {
   seo_title: "Ghana Appliances - Quality Electrical Appliances | COD",
   seo_description: "Buy TVs, air conditioners, refrigerators, washing machines and more in Ghana. Cash on delivery available nationwide.",
   seo_keywords: "electrical appliances ghana, buy tv accra, air conditioner ghana, refrigerator ghana, cod appliances",
-  meta_pixel_id: "", meta_pixel_access_token: "", google_analytics_id: "", resend_api_key: "",
+  meta_pixel_id: "", meta_pixel_access_token: "", google_analytics_id: "", tiktok_pixel_id: "", resend_api_key: "",
   footer_about: "Quality electrical appliances delivered to your doorstep. Pay cash on delivery.",
   footer_cod_text: "",
   admin_password: "",
@@ -120,23 +118,7 @@ export default function AdminSettings() {
 
   const set = (k: string, v: string) => setSettings((s: any) => ({ ...s, [k]: v }))
 
-  // Shipping regions as editable array
-  const shippingRows = parseShippingRegions(settings.shipping_fees || "")
-  const updateShippingRow = (idx: number, field: "region" | "fee", value: string) => {
-    const rows = [...shippingRows]
-    rows[idx] = { ...rows[idx], [field]: value }
-    set("shipping_fees", serialiseShippingRegions(rows))
-  }
-  const addShippingRow = () => {
-    const rows = [...shippingRows, { region: "", fee: "0" }]
-    set("shipping_fees", serialiseShippingRegions(rows))
-  }
-  const removeShippingRow = (idx: number) => {
-    const rows = shippingRows.filter((_, i) => i !== idx)
-    set("shipping_fees", serialiseShippingRegions(rows))
-  }
-
-  if (loading) return <div className="py-20 text-center text-gray-400">Loading settings...</div>
+    if (loading) return <div className="py-20 text-center text-gray-400">Loading settings...</div>
 
   return (
     <div className="max-w-3xl">
@@ -163,7 +145,6 @@ export default function AdminSettings() {
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="homepage">Homepage</TabsTrigger>
           <TabsTrigger value="hero">Hero Slides</TabsTrigger>
-          <TabsTrigger value="shipping">Shipping Fees</TabsTrigger>
           <TabsTrigger value="social">Social & Media</TabsTrigger>
           <TabsTrigger value="seo">SEO</TabsTrigger>
           <TabsTrigger value="email">Email & Tracking</TabsTrigger>
@@ -202,65 +183,7 @@ export default function AdminSettings() {
           <div className="space-y-1.5"><Label>Low Stock Threshold</Label><Input value={settings.low_stock_threshold || "5"} onChange={e => set("low_stock_threshold", e.target.value)} type="number" placeholder="5" /><p className="text-xs text-gray-400">Products with stock at or below this number will show a low-stock alert in the admin dashboard.</p></div>
         </TabsContent>
 
-        <TabsContent value="shipping" className="bg-white border rounded-xl p-6 space-y-4">
-          <p className="text-sm text-gray-500">Define delivery fees per region in Ghana. Fees are in GHS.</p>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left text-gray-500">
-                  <th className="pb-2 font-medium">Region Name</th>
-                  <th className="pb-2 font-medium">Fee (GHS)</th>
-                  <th className="pb-2 w-10"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {shippingRows.map((row, idx) => (
-                  <tr key={idx} className="border-b last:border-0">
-                    <td className="py-2 pr-2">
-                      <Input
-                        value={row.region}
-                        onChange={e => updateShippingRow(idx, "region", e.target.value)}
-                        placeholder="e.g. Greater Accra"
-                        className="h-9"
-                      />
-                    </td>
-                    <td className="py-2 pr-2">
-                      <Input
-                        value={row.fee}
-                        onChange={e => updateShippingRow(idx, "fee", e.target.value)}
-                        type="number"
-                        placeholder="0"
-                        className="h-9 w-28"
-                      />
-                    </td>
-                    <td className="py-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
-                        onClick={() => removeShippingRow(idx)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-                {shippingRows.length === 0 && (
-                  <tr><td colSpan={3} className="py-6 text-center text-gray-400">No regions defined. Click "Add Region" to start.</td></tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={addShippingRow}
-            className="text-amber-600 border-amber-300 hover:bg-amber-50"
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            Add Region
-          </Button>
-        </TabsContent>
+        
 
         <TabsContent value="social" className="bg-white border rounded-xl p-6 space-y-4">
           <p className="text-sm text-gray-500">Configure social media links, favicon, and Open Graph image for sharing.</p>
@@ -352,6 +275,11 @@ export default function AdminSettings() {
             <Label>Google Analytics ID</Label>
             <Input value={settings.google_analytics_id || ""} onChange={e => set("google_analytics_id", e.target.value)} placeholder="e.g. G-XXXXXXXXXX" />
             <p className="text-xs text-gray-400">Google Analytics 4 Measurement ID.</p>
+          </div>
+          <div className="space-y-1.5">
+            <Label>TikTok Pixel ID</Label>
+            <Input value={settings.tiktok_pixel_id || ""} onChange={e => set("tiktok_pixel_id", e.target.value)} placeholder="e.g. ABCDEFGHIJKLMNOP" />
+            <p className="text-xs text-gray-400">TikTok Pixel ID for TikTok Ads tracking. Events: ViewContent, AddToCart, InitiateCheckout, PlaceAnOrder.</p>
           </div>
         </TabsContent>
 

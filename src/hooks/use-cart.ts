@@ -1,8 +1,8 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { CartItem, Product } from '@/lib/types'
-import { MetaPixel } from '@/lib/pixel'
+import { CartItem, Product, ProductVariant } from '@/lib/types'
+import { MetaPixel, TikTokPixel } from '@/lib/pixel'
 import { useAnalytics } from '@/hooks/use-analytics'
 
 const CART_KEY = 'ghana-appliances-cart'
@@ -35,13 +35,18 @@ export function useCart() {
     return () => window.removeEventListener('cart-updated', handler)
   }, [])
 
-  const addItem = useCallback((product: Product, quantity = 1) => {
+  const addItem = useCallback((product: Product, quantity = 1, variant?: ProductVariant) => {
     const current = loadCart()
-    const idx = current.findIndex(i => i.product.id === product.id)
+    const variantId = variant?.id || undefined
+    // Match by product ID AND variant ID (or lack thereof)
+    const idx = current.findIndex(i => 
+      i.product.id === product.id && 
+      (i.variant_id || undefined) === variantId
+    )
     if (idx >= 0) {
       current[idx].quantity += quantity
     } else {
-      current.push({ product, quantity })
+      current.push({ product, quantity, variant_id: variantId, variant: variant || undefined })
     }
     saveCart(current)
 
@@ -56,6 +61,15 @@ export function useCart() {
         currency: "GHS",
         num_items: quantity,
       })
+      try {
+        TikTokPixel.addToCart({
+          content_id: product.id,
+          content_name: product.name,
+          value: product.price_ghs * quantity,
+          currency: "GHS",
+          quantity,
+        })
+      } catch (_) {}
     }
   }, [])
 
