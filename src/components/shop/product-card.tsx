@@ -50,8 +50,8 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <>
-      <article itemScope itemType="https://schema.org/Product">
-        <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 relative">
+      <article itemScope itemType="https://schema.org/Product" className="h-full">
+        <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 relative h-full">
           {/* Wishlist */}
           <button
             onClick={(e) => { e.preventDefault(); toggle(product.id) }}
@@ -93,10 +93,10 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
           </Link>
 
-          <CardContent className="p-4">
+          <CardContent className="p-4 flex flex-col flex-1">
             <p itemProp="category" className="text-xs text-gray-500 uppercase tracking-wider mb-1">{product.category?.replace("-", " ")}</p>
             <Link href={`/products/${product.slug}`}>
-              <h3 itemProp="name" className="font-semibold text-gray-900 line-clamp-2 hover:text-amber-600 transition-colors text-sm">{product.name}</h3>
+              <h3 itemProp="name" className="font-semibold text-gray-900 line-clamp-2 hover:text-amber-600 transition-colors text-sm min-h-[2.5rem]">{product.name}</h3>
             </Link>
             {ratingCount > 0 && (
               <div className="flex items-center gap-1 mt-1.5">
@@ -108,7 +108,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 <span className="text-xs text-gray-400">({ratingCount})</span>
               </div>
             )}
-            <div itemProp="offers" itemScope itemType="https://schema.org/Offer" className="flex items-baseline gap-2 mt-2">
+            <div itemProp="offers" itemScope itemType="https://schema.org/Offer" className="flex items-baseline gap-2 mt-auto pt-2">
               <meta itemProp="priceCurrency" content="GHS" />
               <meta itemProp="price" content={String(product.price_ghs)} />
               <span className="text-lg font-bold text-amber-600">{formatPrice(product.price_ghs)}</span>

@@ -37,7 +37,7 @@ export default async function BlogPage() {
       <BreadcrumbSchema items={[{ name: "Home", url: "/" }, { name: "Blog", url: "/blog" }]} />
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">Ghana Appliances Blog</h1>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">Ghana Appliances Blog</h1>
         <p className="text-lg text-gray-500 mb-10">
           Expert tips, buying guides, and home appliance advice for Ghanaian households.
         </p>
@@ -56,7 +56,7 @@ export default async function BlogPage() {
                   {post.featured_image ? (
                     <NextImage src={post.featured_image} alt={post.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-300" />
                   ) : (
-                    <div className="h-full w-full flex items-center justify-center text-5xl">📝</div>
+                    <div className="h-full w-full flex items-center justify-center text-5xl">??</div>
                   )}
                 </div>
                 <div className="md:col-span-2 p-6 md:py-6 md:pr-6 md:pl-0">

@@ -49,8 +49,8 @@ export default function AccountPage() {
         <Button variant="outline" onClick={async () => { await signOut(); router.push("/") }} className="gap-2 text-red-500"><LogOut className="h-4 w-4" /> Sign Out</Button>
       </div>
       
-      <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
+      <div className="grid lg:grid-cols-3 gap-8 min-w-0">
+        <div className="lg:col-span-2 min-w-0">
           <div className="bg-white border rounded-xl p-6 space-y-4">
             <h2 className="font-semibold text-lg flex items-center gap-2"><User className="h-5 w-5 text-amber-500" /> Profile</h2>
             <div className="grid sm:grid-cols-2 gap-4">

@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link"
@@ -13,6 +13,12 @@ function StyledLink({ href, className, children }: { href: string; className?: s
       {children}
     </Link>
   )
+}
+
+/** Effective unit price for a cart item (variant price if set, otherwise product price). */
+function itemUnitPrice(item: ReturnType<typeof useCartContext>["items"][number]): number {
+  if (item.variant?.price_ghs && item.variant.price_ghs > 0) return item.variant.price_ghs
+  return item.product.price_ghs
 }
 
 export default function CartPage() {
@@ -30,38 +36,45 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 overflow-x-hidden">
       <h1 className="text-2xl font-bold mb-6">Shopping Cart ({itemCount} items)</h1>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-4">
-          {items.map(item => (
-            <div key={item.product.id} className="flex gap-4 bg-white border rounded-xl p-4">
-              <Link href={`/products/${item.product.slug}`} className="h-24 w-24 bg-gray-100 rounded-lg flex items-center justify-center text-4xl flex-shrink-0">
+      <div className="grid lg:grid-cols-3 gap-4 lg:gap-6 min-w-0">
+        <div className="lg:col-span-2 space-y-4 min-w-0">
+          {items.map(item => {
+            const price = itemUnitPrice(item)
+            const lineTotal = price * item.quantity
+            return (
+            <div key={`${item.product.id}-${item.variant_id || "no-variant"}`} className="flex gap-3 sm:gap-4 bg-white border rounded-xl p-3 sm:p-4">
+              <Link href={`/products/${item.product.slug}`} className="h-20 w-20 sm:h-24 sm:w-24 bg-gray-100 rounded-lg flex items-center justify-center text-3xl sm:text-4xl flex-shrink-0">
                 {item.product.images?.[0] ? (
                   <img src={item.product.images[0]} alt={item.product.name} className="h-full w-full object-cover rounded-lg" />
-                ) : "ð¦"}
+                ) : "📦"}
               </Link>
               <div className="flex-1 min-w-0">
                 <Link href={`/products/${item.product.slug}`} className="font-semibold hover:text-amber-600 line-clamp-1">
                   {item.product.name}
                 </Link>
                 <p className="text-sm text-gray-500 capitalize">{item.product.category}</p>
-                <p className="font-bold text-amber-600 mt-1"> {formatPrice(item.product.price_ghs)}</p>
+                {item.variant && (
+                  <p className="text-xs text-gray-400 mt-0.5">{item.variant.name}{item.variant.sku ? ` (${item.variant.sku})` : ""}</p>
+                )}
+                <p className="font-bold text-amber-600 mt-1"> {formatPrice(price)}</p>
               </div>
               <div className="flex flex-col items-end justify-between">
-                <button onClick={() => removeItem(item.product.id)} className="text-gray-400 hover:text-red-500">
+                <button onClick={() => removeItem(item.product.id, item.variant_id)} className="text-gray-400 hover:text-red-500">
                   <Trash2 className="h-4 w-4" />
                 </button>
                 <div className="flex items-center border rounded">
-                  <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="px-2 py-1 hover:bg-gray-100"><Minus className="h-3 w-3" /></button>
+                  <button onClick={() => updateQuantity(item.product.id, item.quantity - 1, item.variant_id)} className="px-2 py-1 hover:bg-gray-100"><Minus className="h-3 w-3" /></button>
                   <span className="px-3 py-1 text-sm font-medium">{item.quantity}</span>
-                  <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="px-2 py-1 hover:bg-gray-100"><Plus className="h-3 w-3" /></button>
+                  <button onClick={() => updateQuantity(item.product.id, item.quantity + 1, item.variant_id)} className="px-2 py-1 hover:bg-gray-100"><Plus className="h-3 w-3" /></button>
                 </div>
-                <p className="font-bold text-sm"> {formatPrice((item.product.price_ghs * item.quantity))}</p>
+                <p className="font-bold text-sm"> {formatPrice(lineTotal)}</p>
               </div>
             </div>
-          ))}
+            )
+          })}
         </div>
 
         <div className="lg:col-span-1">

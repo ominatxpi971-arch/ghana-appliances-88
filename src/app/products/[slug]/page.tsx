@@ -1,5 +1,5 @@
 ﻿import type { Metadata } from "next"
-import { getProductBySlug, getProducts } from "@/lib/db"
+import { getProductBySlug, getProducts, getVariants } from "@/lib/db"
 import { notFound } from "next/navigation"
 import Breadcrumbs from "@/components/Breadcrumbs"
 import { BreadcrumbSchema, ProductSchema } from '@/components/StructuredData'
@@ -71,6 +71,9 @@ export default async function ProductPage({ params }: Props) {
 
   if (!product || !product.active) notFound()
 
+  const variants = await getVariants(product.id)
+  const productWithVariants = { ...product, variants }
+
   const allProducts = await getProducts()
   const related = allProducts
     .filter(p => p.category === product.category && p.id !== product.id && p.active)
@@ -91,7 +94,7 @@ export default async function ProductPage({ params }: Props) {
         { name: product.name, url: `/products/${product.slug}` },
       ]} />
       <ProductSchema product={product} />
-      <ProductPageClient product={product} related={related} />
+      <ProductPageClient product={productWithVariants} related={related} />
     </>
   )
 }

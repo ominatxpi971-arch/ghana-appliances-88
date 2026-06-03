@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
@@ -37,7 +37,7 @@ export default function Footer() {
       <meta itemProp="name" content={siteName} />
       <meta itemProp="url" content="https://ghanaappliance.cc" />
 
-      <div className="container mx-auto px-4 py-12 grid grid-cols-2 lg:grid-cols-5 gap-8">
+      <div className="container mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-8">
         <div className="col-span-2 lg:col-span-1">
           <div className="text-white font-bold text-lg mb-3">{siteName}</div>
           <p className="text-sm">{settings?.footer_about || "Quality electrical appliances delivered to your doorstep."}</p>

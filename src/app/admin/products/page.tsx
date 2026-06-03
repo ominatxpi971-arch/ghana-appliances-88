@@ -14,7 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import ImageUpload from "@/components/admin/image-upload"
 import SpecsEditor from "@/components/admin/specs-editor"
-import { Product } from "@/lib/types"
+import VariantEditor from "@/components/admin/variant-editor"
+import { Product, ProductVariant } from "@/lib/types"
 import { toast } from "sonner"
 
 const CATEGORIES = [
@@ -32,7 +33,7 @@ type SortOrder = "asc" | "desc"
 
 const EMPTY: Partial<Product> = {
    name: "", description: "", category: "televisions", price_ghs: 0, original_price: null,
-   images: [], specs: {}, stock: 0, featured: false, active: true, slug: ""
+   images: [], specs: {}, stock: 0, featured: false, active: true, slug: "", variants: [] as any
  }
 
 export default function AdminProducts() {
@@ -344,7 +345,7 @@ export default function AdminProducts() {
                   </td>
                   <td className="p-3">
                     <div className="flex gap-1">
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEditing({ ...p }); setDialogOpen(true) }}><Edit className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={async () => { const res = await fetch(`/api/products/${p.id}`); const full = await res.json(); setEditing(full); setDialogOpen(true) }}><Edit className="h-4 w-4" /></Button>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500" onClick={() => setDeleteConfirm({ id: p.id, name: p.name })}><Trash2 className="h-4 w-4" /></Button>
                     </div>
                   </td>
@@ -440,6 +441,7 @@ export default function AdminProducts() {
             <TabsList className="mb-4">
               <TabsTrigger value="general">General</TabsTrigger>
               <TabsTrigger value="seo">SEO</TabsTrigger>
+              <TabsTrigger value="variants">Variants (SKU)</TabsTrigger>
             </TabsList>
             <TabsContent value="general" className="space-y-4">
             <div className="space-y-1.5">
@@ -501,6 +503,10 @@ export default function AdminProducts() {
                 <Label>SEO Keywords</Label>
                 <Input value={editing?.seo_keywords || ""} onChange={e => setEditing({ ...editing, seo_keywords: e.target.value })} placeholder="comma, separated, keywords" />
               </div>
+            
+</TabsContent>
+            <TabsContent value="variants" className="space-y-4 pt-2">
+              <VariantEditor variants={(editing?.variants || []) as any} onChange={(variants: any) => setEditing({ ...editing, variants } as any)} />
             </TabsContent>
           </Tabs>
           <DialogFooter>

@@ -1,4 +1,4 @@
-
+﻿
 "use client"
 
 import Link from 'next/link'
@@ -32,7 +32,7 @@ export default function RecentlyViewed({ currentProduct }: { currentProduct?: Pr
           <Link key={item.id} href={`/products/${item.slug}`} className="flex-shrink-0 w-32 group">
             <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-1 relative">
               {item.image ? <NextImage src={item.image} alt={item.name} fill sizes="100px" className="object-cover group-hover:opacity-80" />
-                : <div className="h-full w-full flex items-center justify-center text-3xl">📝</div>}
+                : <div className="h-full w-full flex items-center justify-center text-3xl">📦</div>}
             </div>
             <p className="text-xs font-medium line-clamp-2">{item.name}</p>
             <p className="text-xs font-bold text-amber-600">{formatPrice(item.price)}</p>

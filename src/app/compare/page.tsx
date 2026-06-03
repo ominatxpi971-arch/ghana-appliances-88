@@ -58,9 +58,9 @@ export default function ComparePage() {
         <table className="w-full border-collapse">
           <thead>
             <tr>
-              <th className="text-left p-3 bg-gray-50 font-medium text-sm w-40">Product</th>
+              <th className="text-left p-3 bg-gray-50 font-medium text-sm w-1/4 sm:w-40">Product</th>
               {items.map(p => (
-                <th key={p.id} className="p-3 bg-gray-50 text-center min-w-[200px]">
+                <th key={p.id} className="p-3 bg-gray-50 text-center flex-1 min-w-0">
                   <div className="relative">
                     <button onClick={() => removeItem(p.id)} className="absolute -top-1 -right-1 text-gray-400 hover:text-red-500">
                       <X className="h-4 w-4" />

@@ -127,6 +127,10 @@
   html {
     @apply font-sans;
   }
+  html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
 }
 /* Content-visibility optimization for below-fold sections */
 @media (min-width: 768px) {
@@ -134,4 +138,21 @@
     content-visibility: auto;
     contain-intrinsic-size: auto 500px;
   }
+}/* Ensure Base UI Input inner elements don't overflow parent */
+[data-slot="input"] input {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Fluid layout: prevent grid children from overflowing due to CSS Grid default min-width:auto */
+@media (max-width: 1023px) {
+  .grid > * {
+    min-width: 0;
+  }
+}
+/* Ensure embedded media respects container */
+img, video, iframe, table {
+  max-width: 100%;
+  height: auto;
 }

@@ -18,7 +18,7 @@ export default function WhatsAppFloat() {
   const cleanNumber = whatsapp.replace(/[^0-9]/g, "")
 
   return (
-    <div className="fixed bottom-20 right-4 z-40 md:bottom-6 flex flex-col items-end gap-2">
+    <div className="fixed bottom-24 right-4 z-40 md:bottom-6 safe-area-bottom flex flex-col items-end gap-2">
       {expanded && (
         <div className="bg-white rounded-xl shadow-xl border p-4 w-64 animate-in slide-in-from-bottom-2">
           <div className="flex items-center justify-between mb-3">

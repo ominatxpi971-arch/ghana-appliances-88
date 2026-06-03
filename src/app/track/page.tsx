@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import Breadcrumbs from "@/components/Breadcrumbs"
 import { useState } from "react"
@@ -108,7 +108,7 @@ export default function TrackOrderPage() {
                     }`}>
                       {i < currentStep ? "OK" : i + 1}
                     </div>
-                    <span className={`text-xs mt-1 text-center ${
+                    <span className={`text-[10px] sm:text-xs mt-1 text-center leading-tight ${
                       i <= currentStep ? "text-amber-600 font-medium" : "text-gray-400"
                     }`}>
                       {getStatusLabel(step)}
@@ -123,7 +123,7 @@ export default function TrackOrderPage() {
               <div className="rounded-lg border bg-blue-50 p-4 mb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Truck className="h-4 w-4 text-blue-600" />
-                  <span className="font-medium">Tracking: {order.tracking_number}</span>
+                  <span className="font-medium break-all">Tracking: {order.tracking_number}</span>
                 </div>
                 {order.tracking_url && (
                   <a href={order.tracking_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline text-sm">
@@ -139,8 +139,8 @@ export default function TrackOrderPage() {
                 <span className="font-medium">{STATUS_LABEL[order.status]}</span>
               </p>
               <p className="text-sm text-gray-500">Total: <strong>{formatPrice(order.total_ghs)}</strong></p>
-              <p className="text-sm text-gray-500">Items: {order.items?.map(i => `${i.product_name} ×${i.quantity}`).join(", ")}</p>
-              <p className="text-sm text-gray-500">Delivery to: {order.customer_city && `${order.customer_city}, `}{order.customer_address}</p>
+              <p className="text-sm text-gray-500 break-words">Items: {order.items?.map(i => `${i.product_name} ×${i.quantity}`).join(", ")}</p>
+              <p className="text-sm text-gray-500 break-words">Delivery to: {order.customer_city && `${order.customer_city}, `}{order.customer_address}</p>
               <p className="text-xs text-gray-400">Ordered: {new Date(order.created_at).toLocaleString()}</p>
             </div>
           </div>

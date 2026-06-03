@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin"
-import { Product, Order, OrderStatus, Post, SiteSettings } from "@/lib/types"
+import { Product, ProductVariant, Order, OrderStatus, Post, SiteSettings } from "@/lib/types"
 import { products as seedProducts } from "@/lib/data"
 
 function supabase() { return createAdminClient() }
@@ -88,6 +88,9 @@ export async function getOrders(): Promise<Order[]> {
       order_id: i.order_id,
       product_id: i.product_id,
       product_name: i.product_name || "",
+      variant_id: i.variant_id || undefined,
+      variant_name: i.variant_name || undefined,
+      variant_sku: i.variant_sku || undefined,
       quantity: Number(i.quantity) || 1,
       unit_price: Number(i.unit_price) || 0
     }))
@@ -249,6 +252,64 @@ function postToRow(p: any): Record<string, unknown> {
     published: p.published ?? false,
   }
 }
+
+
+// ==================== Product Variants ====================
+
+export async function getVariants(productId: string): Promise<ProductVariant[]> {
+  if (!isSupabaseConfigured()) return []
+  const { data, error } = await supabase().from("product_variants").select("*").eq("product_id", productId).order("sort_order", { ascending: true })
+  if (error) return []
+  return (data || []).map(rowToVariant)
+}
+
+export async function saveVariants(productId: string, variants: Partial<ProductVariant>[]): Promise<void> {
+  if (!isSupabaseConfigured()) return
+  // Delete existing variants for this product
+  await supabase().from("product_variants").delete().eq("product_id", productId)
+  // Insert new ones
+  for (const v of variants) {
+    const row = variantToRow({ ...v, product_id: productId })
+    await supabase().from("product_variants").insert(row)
+  }
+}
+
+function rowToVariant(row: any): ProductVariant {
+  return {
+    id: row.id,
+    product_id: row.product_id,
+    sku: row.sku || undefined,
+    name: row.name || "",
+    option1_name: row.option1_name || undefined,
+    option1_value: row.option1_value || undefined,
+    option2_name: row.option2_name || undefined,
+    option2_value: row.option2_value || undefined,
+    price_ghs: Number(row.price_ghs) || 0,
+    stock: Number(row.stock) || 0,
+    image: row.image || undefined,
+    sort_order: row.sort_order || 0,
+    active: row.active ?? true,
+    created_at: row.created_at,
+  }
+}
+
+function variantToRow(v: any): Record<string, unknown> {
+  return {
+    product_id: v.product_id,
+    sku: v.sku || null,
+    name: v.name || "",
+    option1_name: v.option1_name || null,
+    option1_value: v.option1_value || null,
+    option2_name: v.option2_name || null,
+    option2_value: v.option2_value || null,
+    price_ghs: v.price_ghs ?? 0,
+    stock: v.stock ?? 0,
+    image: v.image || null,
+    sort_order: v.sort_order ?? 0,
+    active: v.active ?? true,
+  }
+}
+
 // ==================== Helpers ====================
 
 function rowToProduct(row: any): Product {

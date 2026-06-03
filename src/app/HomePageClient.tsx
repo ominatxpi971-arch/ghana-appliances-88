@@ -16,18 +16,18 @@ import { Separator } from "@/components/ui/separator"
 import ProductCard from "@/components/shop/product-card"
 
 const FEATURES = [
-  { icon: Truck, title: "Cash on Delivery", desc: "Pay only when you receive your order �� nationwide" },
+  { icon: Truck, title: "Cash on Delivery", desc: "Pay only when you receive your order 🚚 nationwide" },
   { icon: ShieldCheck, title: "100% Authentic", desc: "Genuine branded appliances with manufacturer warranty" },
   { icon: RefreshCw, title: "Easy Returns", desc: "7-day hassle-free return policy on all items" },
-  { icon: Phone, title: "24/7 Support", desc: "Call or WhatsApp us anytime �� we are here to help" },
+  { icon: Phone, title: "24/7 Support", desc: "Call or WhatsApp us anytime 💬 we are here to help" },
 ]
 
 const CATEGORIES = [
-  { name: "Televisions", slug: "televisions", icon: "??", color: "from-blue-500 to-cyan-500", desc: "4K, OLED, Smart TVs" },
-  { name: "Air Conditioners", slug: "air-conditioners", icon: "??", color: "from-sky-400 to-blue-600", desc: "Split, Inverter, Window ACs" },
-  { name: "Refrigerators", slug: "refrigerators", icon: "??", color: "from-emerald-400 to-teal-600", desc: "French Door, Side-by-Side" },
-  { name: "Washing Machines", slug: "washing-machines", icon: "??", color: "from-violet-400 to-purple-600", desc: "Front Load, Top Load, Twin Tub" },
-  { name: "Small Appliances", slug: "small-appliances", icon: "??", color: "from-orange-400 to-rose-500", desc: "Kettles, Irons, Blenders & more" },
+  { name: "Televisions", slug: "televisions", icon: "📺", color: "from-blue-500 to-cyan-500", desc: "4K, OLED, Smart TVs" },
+  { name: "Air Conditioners", slug: "air-conditioners", icon: "❄️", color: "from-sky-400 to-blue-600", desc: "Split, Inverter, Window ACs" },
+  { name: "Refrigerators", slug: "refrigerators", icon: "🧊", color: "from-emerald-400 to-teal-600", desc: "French Door, Side-by-Side" },
+  { name: "Washing Machines", slug: "washing-machines", icon: "👕", color: "from-violet-400 to-purple-600", desc: "Front Load, Top Load, Twin Tub" },
+  { name: "Small Appliances", slug: "small-appliances", icon: "🔌", color: "from-orange-400 to-rose-500", desc: "Kettles, Irons, Blenders & more" },
 ]
 
 function getHeroSlides(settings: Partial<SiteSettings> | null) { if (!settings) settings = {};
@@ -41,7 +41,7 @@ function getHeroSlides(settings: Partial<SiteSettings> | null) { if (!settings) 
       ctaLink: settings.hero1_cta_link || "/products",
       bg: settings.hero1_bg || "from-gray-900 via-gray-800 to-amber-900",
       accent: settings.hero1_accent || "amber",
-      icon: settings.hero1_icon || "??",
+      icon: settings.hero1_icon || "🏠",
       image: settings.hero1_image || "/hero-1.webp",
     },
     {
@@ -53,7 +53,7 @@ function getHeroSlides(settings: Partial<SiteSettings> | null) { if (!settings) 
       ctaLink: settings.hero2_cta_link || "/products",
       bg: settings.hero2_bg || "from-amber-900 via-orange-800 to-red-900",
       accent: settings.hero2_accent || "orange",
-      icon: settings.hero2_icon || "??",
+      icon: settings.hero2_icon || "🍳",
       image: settings.hero2_image || "/hero-2.webp",
     },
     {
@@ -65,7 +65,7 @@ function getHeroSlides(settings: Partial<SiteSettings> | null) { if (!settings) 
       ctaLink: settings.hero3_cta_link || "/products",
       bg: settings.hero3_bg || "from-emerald-900 via-teal-800 to-amber-900",
       accent: settings.hero3_accent || "emerald",
-      icon: settings.hero3_icon || "??",
+      icon: settings.hero3_icon || "🚚",
       image: settings.hero3_image || "/hero-3.webp",
     },
   ]
@@ -73,7 +73,7 @@ function getHeroSlides(settings: Partial<SiteSettings> | null) { if (!settings) 
 
 const TESTIMONIALS = [
   { name: "Akua M.", city: "Accra", text: "Ordered a Samsung TV and it arrived within 2 days. The delivery team was professional and the product is genuine. Highly recommend!", rating: 5 },
-  { name: "Kwame O.", city: "Kumasi", text: "Best prices on air conditioners in Ghana. I saved over GH? 500 compared to other shops. Installation was smooth.", rating: 5 },
+  { name: "Kwame O.", city: "Kumasi", text: "Best prices on air conditioners in Ghana. I saved over GH₵ 500 compared to other shops. Installation was smooth.", rating: 5 },
   { name: "Abena D.", city: "Tema", text: "Their COD option saved me. I could inspect the fridge before paying. Great customer service via WhatsApp.", rating: 5 },
 ]
 
@@ -190,7 +190,7 @@ export default function HomePageClient({ settings, products }: { settings: Parti
           </div>
         </div>
         {/* Navigation dots */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-3">
           {heroSlides.map((_, i) => (
             <button
               key={i}
@@ -200,10 +200,10 @@ export default function HomePageClient({ settings, products }: { settings: Parti
           ))}
         </div>
         {/* Arrows */}
-        <button onClick={() => setHeroIndex(i => i > 0 ? i - 1 : heroSlides.length - 1)} className="absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
+        <button onClick={() => setHeroIndex(i => i > 0 ? i - 1 : heroSlides.length - 1)} className="absolute left-4 top-1/2 -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
           <ChevronLeft className="h-5 w-5" />
         </button>
-        <button onClick={() => setHeroIndex(i => (i + 1) % heroSlides.length)} className="absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
+        <button onClick={() => setHeroIndex(i => (i + 1) % heroSlides.length)} className="absolute right-4 top-1/2 -translate-y-1/2 h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center">
           <ChevronRight className="h-5 w-5" />
         </button>
       </section>
@@ -250,7 +250,7 @@ export default function HomePageClient({ settings, products }: { settings: Parti
       {topRated.length > 0 && (
         <section className="container mx-auto px-4 py-12">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">? Top Rated</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">⭐ Top Rated</h2>
             <p className="text-gray-500">Highest rated by our customers</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -269,7 +269,7 @@ export default function HomePageClient({ settings, products }: { settings: Parti
             <Link href="/products" className="text-amber-600 hover:underline text-sm">View All &rarr; </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {products.slice(0, 8).map((product: Product) => (
+            {products.slice(0, 4).map((product: Product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
@@ -351,7 +351,7 @@ export default function HomePageClient({ settings, products }: { settings: Parti
         <div className="container mx-auto px-4 py-16 text-center">
           <h2 className="text-3xl md:text-4xl font-extrabold mb-3">Ready to Upgrade Your Home?</h2>
           <p className="text-lg mb-6 opacity-90 max-w-xl mx-auto">
-            Browse our collection of quality appliances. No payment needed until delivery �� shop with confidence.
+            Browse our collection of quality appliances. No payment needed until delivery 🛒 shop with confidence.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <StyledLink href="/products" className="bg-black text-white hover:bg-gray-800 h-12 px-8 text-base font-bold">

@@ -1,10 +1,10 @@
-﻿"use client"
+"use client"
 
 import { useState, useEffect } from "react"
 import { formatPrice } from "@/lib/utils"
-import Link from 'next/link'
-import NextImage from 'next/image'
-import { ShoppingCart, Menu, X, MapPin, User, Home, Package, Search, Phone } from "lucide-react"
+import Link from "next/link"
+import NextImage from "next/image"
+import { ShoppingCart, Menu, X, MapPin, User, Home, Package, Search, Zap, Info, Phone } from "lucide-react"
 import { useAuth } from "@/components/shop/auth-context"
 import { Button } from "@/components/ui/button"
 import { useCartContext } from "@/components/shop/cart-context"
@@ -19,6 +19,12 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ]
 
+/** Effective unit price for a cart item (variant price if set, otherwise product price). */
+function itemUnitPrice(item: ReturnType<typeof useCartContext>["items"][number]): number {
+  if (item.variant?.price_ghs && item.variant.price_ghs > 0) return item.variant.price_ghs
+  return item.product.price_ghs
+}
+
 export default function Header() {
   const { user: authUser } = useAuth()
   const { items, itemCount, total, removeItem, updateQuantity } = useCartContext()
@@ -31,22 +37,21 @@ export default function Header() {
   }, [])
 
   const siteName = settings?.site_name || "Ghana Appliances"
-  const phone = settings?.phone || "+233501234567"
   const codLabel = settings?.cod_label || "Cash on Delivery"
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur" role="banner">
+    <header className="fixed top-0 left-0 right-0 z-[100] w-full max-w-full border-b bg-white/95 backdrop-blur overflow-x-hidden" role="banner">
       <meta itemProp="name" content="Ghana Appliances" />
 
       {/* COD Announcement Bar */}
-      <div className="bg-amber-500 text-white text-sm py-1.5 px-4 text-center">
-        <span className="font-medium">{codLabel}</span> - Pay when you receive your order! | Call/WhatsApp: {phone}
+      <div className="bg-amber-500 text-white text-sm py-1.5 px-4 text-center overflow-x-hidden whitespace-normal break-words">
+        <span className="font-medium">{codLabel}</span> - Pay when you receive your order!
       </div>
 
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-gray-900 shrink-0" aria-label="Ghana Appliances Home">
-          <span className="text-amber-500 text-2xl">⚡</span>
+          <Zap className="h-6 w-6 text-amber-500 flex-shrink-0" />
           <span className="hidden sm:inline">{siteName}</span>
           <span className="sm:hidden">GA</span>
         </Link>
@@ -76,7 +81,7 @@ export default function Header() {
             {cartOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setCartOpen(false)} />
-                <div className="absolute right-0 top-full mt-2 w-96 bg-white border rounded-xl shadow-2xl z-50 max-h-[80vh] flex flex-col">
+                <div className="absolute right-0 top-full mt-2 w-full max-w-sm bg-white border rounded-xl shadow-2xl z-50 max-h-[80vh] flex flex-col">
                   <div className="p-4 border-b font-semibold flex items-center justify-between">
                     <span>Shopping Cart ({itemCount} items)</span>
                     <button onClick={() => setCartOpen(false)} className="text-gray-400 hover:text-gray-600 text-lg">&times;</button>
@@ -91,28 +96,34 @@ export default function Header() {
                   ) : (
                     <>
                       <div className="flex-1 overflow-auto py-4 px-4">
-                        {items.map(item => (
-                          <div key={item.product.id} className="flex gap-3 py-3 border-b last:border-b-0">
+                        {items.map(item => {
+                          const price = itemUnitPrice(item)
+                          return (
+                          <div key={item.product.id + "-" + (item.variant_id || "no-variant")} className="flex gap-3 py-3 border-b last:border-b-0">
                             <div className="h-16 w-16 bg-gray-100 rounded flex-shrink-0 overflow-hidden relative">
                               {item.product.images?.[0]
                                 ? <NextImage src={item.product.images[0]} alt={item.product.name} fill sizes="64px" className="object-cover" />
-                                : <span className="h-full w-full flex items-center justify-center text-2xl">📦</span>
+                                : <span className="h-full w-full flex items-center justify-center text-2xl">??</span>
                               }
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium truncate">{item.product.name}</p>
-                              <p className="text-sm text-amber-600 font-bold">{formatPrice(item.product.price_ghs ?? 0)}</p>
+                              {item.variant && (
+                                <p className="text-xs text-gray-400">{item.variant.name}{item.variant.sku ? ` (${item.variant.sku})` : ""}</p>
+                              )}
+                              <p className="text-sm text-amber-600 font-bold">{formatPrice(price)}</p>
                               <div className="flex items-center gap-2 mt-1">
-                                <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="h-6 w-6 rounded border text-xs hover:bg-gray-100">-</button>
+                                <button onClick={() => updateQuantity(item.product.id, item.quantity - 1, item.variant_id)} className="h-6 w-6 rounded border text-xs hover:bg-gray-100">-</button>
                                 <span className="text-sm w-6 text-center">{item.quantity}</span>
-                                <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="h-6 w-6 rounded border text-xs hover:bg-gray-100">+</button>
+                                <button onClick={() => updateQuantity(item.product.id, item.quantity + 1, item.variant_id)} className="h-6 w-6 rounded border text-xs hover:bg-gray-100">+</button>
                               </div>
                             </div>
-                            <button onClick={() => removeItem(item.product.id)} className="text-gray-400 hover:text-red-500">
+                            <button onClick={() => removeItem(item.product.id, item.variant_id)} className="text-gray-400 hover:text-red-500">
                               <X className="h-4 w-4" />
                             </button>
                           </div>
-                        ))}
+                          )
+                        })}
                       </div>
                       <Separator />
                       <div className="p-4 space-y-3">
@@ -157,11 +168,11 @@ export default function Header() {
                 className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-all"
               >
                 <span className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-base">
-                  {link.label === "Home" && "🏠"}
-                  {link.label === "Products" && "📦"}
-                  {link.label === "Track Order" && "🗺️"}
-                  {link.label === "About" && "ℹ️"}
-                  {link.label === "Contact" && "📞"}
+                  {link.label === "Home" && <Home className="h-4 w-4" />}
+                  {link.label === "Products" && <Package className="h-4 w-4" />}
+                  {link.label === "Track Order" && <MapPin className="h-4 w-4" />}
+                  {link.label === "About" && <Info className="h-4 w-4" />}
+                  {link.label === "Contact" && <Phone className="h-4 w-4" />}
                 </span>
                 {link.label}
               </Link>
@@ -177,16 +188,7 @@ export default function Header() {
               </span>
               {authUser ? "My Account" : "Sign In / Register"}
             </Link>
-            <Link
-              href="/contact"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-gray-500 hover:text-amber-600 transition-all"
-            >
-              <span className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center">
-                <Phone className="h-4 w-4 text-green-500" />
-              </span>
-              Call/WhatsApp: {phone}
-            </Link>
+
           </div>
         </div>
       )}

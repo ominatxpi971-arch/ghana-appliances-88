@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useRef, useState } from "react";
 import { formatPrice } from "@/lib/utils";
@@ -17,6 +17,12 @@ import { useCartContext } from "@/components/shop/cart-context";
 import { MetaPixel, TikTokPixel } from "@/lib/pixel"
 import { useAnalytics } from "@/hooks/use-analytics";
 import { toast } from "sonner";
+
+/** Effective unit price for a cart item (variant price if set, otherwise product price). */
+function itemUnitPrice(item: ReturnType<typeof useCartContext>["items"][number]): number {
+  if (item.variant?.price_ghs && item.variant.price_ghs > 0) return item.variant.price_ghs
+  return item.product.price_ghs
+}
 
 export default function CheckoutPage() {
   const { trackEvent } = useAnalytics()
@@ -40,7 +46,7 @@ export default function CheckoutPage() {
   const deliveryFee = 0
   const finalTotal = total - couponDiscount + deliveryFee;
 
-  // Track InitiateCheckout ? fires once when valid cart data loads
+  // Track InitiateCheckout — fires once when valid cart data loads
   useEffect(() => {
     if (itemCount > 0 && finalTotal > 0 && !hasFiredCheckout.current) {
       hasFiredCheckout.current = true;
@@ -56,7 +62,7 @@ export default function CheckoutPage() {
         });
         try {
           TikTokPixel.initiateCheckout({
-            contents: items.map(i => ({ content_id: i.product.id, content_name: i.product.name, quantity: i.quantity, price: i.product.price_ghs })),
+            contents: items.map(i => ({ content_id: i.product.id, content_name: i.product.name, quantity: i.quantity, price: itemUnitPrice(i) })),
             value: finalTotal,
             currency: "GHS",
           });
@@ -82,13 +88,13 @@ export default function CheckoutPage() {
       const c = coupons.find((co: any) => co.code === couponCode.toUpperCase() && co.active);
       if (!c) { toast.error("Invalid coupon code"); return; }
       if (c.minOrder && total < c.minOrder) {
-        toast.error("Minimum order: GH\u20B5 " + c.minOrder.toLocaleString());
+        toast.error("Minimum order: GH₵ " + c.minOrder.toLocaleString());
         return;
       }
       const d = c.type === "percent" ? Math.round(total * c.discount / 100) : c.discount;
       setCouponDiscount(d);
       setCouponApplied(c.code);
-      toast.success("Saved GH\u20B5 " + d.toLocaleString() + "!");
+      toast.success("Saved GH₵ " + d.toLocaleString() + "!");
     } catch { toast.error("Failed to apply coupon"); }
   };
 
@@ -128,6 +134,7 @@ export default function CheckoutPage() {
           altPhone: "",
           email: form.email,
           city: form.city,
+          region: "",
           address: fullAddress,
           deliveryTime: "any",
           notes: ""
@@ -143,64 +150,49 @@ export default function CheckoutPage() {
         body: JSON.stringify(payload)
       });
 
-      if (!res.ok) {
-        const errText = await res.text().catch(() => "");
-        throw new Error(errText || "Server error " + res.status);
-      }
+      if (!res.ok) throw new Error("Order failed");
 
       const data = await res.json();
-      if (!data || !data.id) throw new Error("Invalid response from server");
-
-      // Success: update state
-      setOrderId(String(data.id));
+      setOrderId(data.id);
       setSuccess(true);
       clearCart();
-      try { trackEvent("order", String(data.id)) } catch (_) {}
-      toast.success("Order placed successfully!");
-      // Track purchase
-      if (finalTotal > 0) {
+
+      // Meta Pixel - Purchase
+      try {
+        MetaPixel.purchase({
+          content_ids: items.map(i => i.product.id),
+          contents: items.map(i => ({ id: i.product.id, quantity: i.quantity })),
+          num_items: itemCount,
+          value: finalTotal,
+          currency: "GHS",
+        });
         try {
-          MetaPixel.purchase({
-            content_ids: items.map(i => i.product.id),
-            contents: items.map(i => ({ id: i.product.id, quantity: i.quantity })),
-            num_items: itemCount,
+          TikTokPixel.purchase({
+            contents: items.map(i => ({ content_id: i.product.id, content_name: i.product.name, quantity: i.quantity, price: itemUnitPrice(i) })),
             value: finalTotal,
             currency: "GHS",
-            order_id: String(data.id)
           });
-          try {
-            TikTokPixel.purchase({
-              contents: items.map(i => ({ content_id: i.product.id, content_name: i.product.name, quantity: i.quantity, price: i.product.price_ghs })),
-              value: finalTotal,
-              currency: "GHS",
-              order_id: String(data.id),
-            });
-          } catch (_) {} 
-        } catch (e) { /* silent */ }
+        } catch (_) {} 
+      } catch (_) {
+        // silently ignore pixel errors
       }
-    } catch (e: any) {
-      const msg = e?.message || String(e);
-      console.error("Checkout error:", msg);
-      toast.error("Order failed: " + msg);
+
+      // Track conversion
+      trackEvent("purchase", String(data.id))
+    } catch {
+      toast.error("Failed to place order. Please try again.");
     } finally {
       setSubmitting(false);
     }
   };
 
-  // --- Render: Success Page ---
+  // --- Render: Success ---
   if (success) {
     return (
-      <div className="container mx-auto px-4 py-16 max-w-lg text-center">
+      <div className="container mx-auto px-4 py-16 text-center max-w-md">
         <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-        <h1 className="text-2xl font-bold mb-2">Order Placed!</h1>
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
-          <p className="text-sm font-mono text-amber-800">
-            Order ID: <strong>{orderId}</strong>
-          </p>
-        </div>
-        <p className="text-gray-600 mb-2">
-          Thank you, {form.firstName}!
-        </p>
+        <h1 className="text-2xl font-bold mb-2">Order Placed Successfully!</h1>
+        <p className="text-gray-500 mb-2">Your order ID is <strong>#{orderId}</strong></p>
         <p className="text-gray-500 text-sm mb-6">
           We will call {form.phone} to confirm your order.
           Pay cash when your items are delivered.
@@ -221,7 +213,6 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
-        <ShoppingCart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
         <h1 className="text-2xl font-bold mb-2">Your cart is empty</h1>
         <p className="text-gray-500 mb-6">Add some products before checking out.</p>
         <Link href="/products" className="inline-flex items-center justify-center rounded-lg text-sm font-medium bg-amber-500 text-white hover:bg-amber-600 h-10 px-4 transition-colors">
@@ -231,51 +222,53 @@ export default function CheckoutPage() {
     );
   }
 
-  // --- Render: Checkout Form ---
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 overflow-x-hidden">
       <Link href="/cart" className="inline-flex items-center text-sm text-gray-500 hover:text-amber-600 mb-6">
         <ChevronLeft className="h-4 w-4 mr-1" /> Back to Cart
       </Link>
-      <h1 className="text-2xl font-bold mb-8">Checkout</h1>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Form */}
+      <h1 className="text-2xl font-bold mb-6">Checkout</h1>
+
+      <div className="grid lg:grid-cols-3 gap-6 min-w-0">
+        {/* Checkout Form */}
         <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-6">
           {/* Personal Info */}
           <div className="bg-white border rounded-xl p-6 space-y-4">
             <h2 className="font-semibold text-lg flex items-center gap-2">
               <Phone className="h-5 w-5 text-amber-500" /> Personal Information
             </h2>
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label>First Name *</Label>
-                <Input placeholder="Kwame" value={form.firstName}
+                <Input placeholder="John" value={form.firstName}
                   onChange={e => setField("firstName", e.target.value)}
                   className={errors.firstName ? "border-red-500" : ""} />
                 {errors.firstName && <p className="text-xs text-red-500">{errors.firstName}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label>Last Name *</Label>
-                <Input placeholder="Asante" value={form.lastName}
+                <Input placeholder="Doe" value={form.lastName}
                   onChange={e => setField("lastName", e.target.value)}
                   className={errors.lastName ? "border-red-500" : ""} />
                 {errors.lastName && <p className="text-xs text-red-500">{errors.lastName}</p>}
               </div>
             </div>
-            <div className="space-y-1.5">
-              <Label>Phone Number *</Label>
-              <Input placeholder="0501234567" value={form.phone}
-                onChange={e => setField("phone", e.target.value)}
-                className={errors.phone ? "border-red-500" : ""} />
-              {errors.phone && <p className="text-xs text-red-500">{errors.phone}</p>}
-            </div>
-            <div className="space-y-1.5">
-              <Label>Email Address</Label>
-              <Input type="email" placeholder="kwame@email.com" value={form.email}
-                onChange={e => setField("email", e.target.value)}
-                className={errors.email ? "border-red-500" : ""} />
-              {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label>Phone Number *</Label>
+                <Input placeholder="+233 50 123 4567" value={form.phone}
+                  onChange={e => setField("phone", e.target.value)}
+                  className={errors.phone ? "border-red-500" : ""} />
+                {errors.phone && <p className="text-xs text-red-500">{errors.phone}</p>}
+              </div>
+              <div className="space-y-1.5">
+                <Label>Email</Label>
+                <Input placeholder="you@example.com" type="email" value={form.email}
+                  onChange={e => setField("email", e.target.value)}
+                  className={errors.email ? "border-red-500" : ""} />
+                {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
+              </div>
             </div>
           </div>
 
@@ -284,27 +277,30 @@ export default function CheckoutPage() {
             <h2 className="font-semibold text-lg flex items-center gap-2">
               <MapPin className="h-5 w-5 text-amber-500" /> Location
             </h2>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <Label>Country *</Label>
-                <Input placeholder="Ghana" value={form.country}
-                  onChange={e => setField("country", e.target.value)}
-                  className={errors.country ? "border-red-500" : ""} />
-                {errors.country && <p className="text-xs text-red-500">{errors.country}</p>}
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label>City *</Label>
-                <Input placeholder="Accra" value={form.city}
+                <Input placeholder="Accra, Kumasi..." value={form.city}
                   onChange={e => setField("city", e.target.value)}
                   className={errors.city ? "border-red-500" : ""} />
                 {errors.city && <p className="text-xs text-red-500">{errors.city}</p>}
               </div>
+              <div className="space-y-1.5">
+                <Label>Region</Label>
+                <Input placeholder="Greater Accra" value={form.country}
+                  onChange={e => setField("country", e.target.value)}
+                  className={errors.country ? "border-red-500" : ""} />
+                {errors.country && <p className="text-xs text-red-500">{errors.country}</p>}
+              </div>
             </div>
-            <div className="space-y-1.5">
-              <Input placeholder="GA-123-4567" value={form.postalCode}
-                onChange={e => setField("postalCode", e.target.value)}
-                className={errors.postalCode ? "border-red-500" : ""} />
-              {errors.postalCode && <p className="text-xs text-red-500">{errors.postalCode}</p>}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label>Postal Code *</Label>
+                <Input placeholder="GA-123-4567" value={form.postalCode}
+                  onChange={e => setField("postalCode", e.target.value)}
+                  className={errors.postalCode ? "border-red-500" : ""} />
+                {errors.postalCode && <p className="text-xs text-red-500">{errors.postalCode}</p>}
+              </div>
             </div>
           </div>
 
@@ -371,16 +367,19 @@ export default function CheckoutPage() {
           <div className="bg-white border rounded-xl p-6 sticky top-24">
             <h2 className="font-semibold text-lg mb-4">Order Summary</h2>
             <div className="space-y-3">
-              {items.map(item => (
-                <div key={item.product.id} className="flex justify-between text-sm">
+              {items.map(item => {
+                const price = itemUnitPrice(item)
+                return (
+                <div key={`${item.product.id}-${item.variant_id || "no-variant"}`} className="flex justify-between text-sm">
                   <span className="truncate flex-1 mr-2">
-                    {item.product.name} x {item.quantity}
+                    {item.product.name}{item.variant ? ` (${item.variant.name})` : ""} x {item.quantity}
                   </span>
                   <span className="font-medium">
-                    {formatPrice(item.product.price_ghs * item.quantity)}
+                    {formatPrice(price * item.quantity)}
                   </span>
                 </div>
-              ))}
+                )
+              })}
             </div>
             <Separator className="my-3" />
             <div className="flex justify-between text-sm">
@@ -419,3 +418,4 @@ export default function CheckoutPage() {
     </div>
   );
 }
+

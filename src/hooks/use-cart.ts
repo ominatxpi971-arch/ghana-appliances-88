@@ -22,6 +22,17 @@ function saveCart(items: CartItem[]) {
   window.dispatchEvent(new Event('cart-updated'))
 }
 
+/** Return the effective unit price for a cart item (variant price if present, otherwise product price). */
+function unitPrice(item: CartItem): number {
+  if (item.variant?.price_ghs && item.variant.price_ghs > 0) return item.variant.price_ghs
+  return item.product.price_ghs
+}
+
+/** Match two cart items by product ID and variant ID (both may be undefined). */
+function itemMatch(a: CartItem, b: { productId: string; variantId?: string }): boolean {
+  return a.product.id === b.productId && (a.variant_id || undefined) === b.variantId
+}
+
 export function useCart() {
   const { trackEvent } = useAnalytics()
   const [items, setItems] = useState<CartItem[]>([])
@@ -39,8 +50,8 @@ export function useCart() {
     const current = loadCart()
     const variantId = variant?.id || undefined
     // Match by product ID AND variant ID (or lack thereof)
-    const idx = current.findIndex(i => 
-      i.product.id === product.id && 
+    const idx = current.findIndex(i =>
+      i.product.id === product.id &&
       (i.variant_id || undefined) === variantId
     )
     if (idx >= 0) {
@@ -50,14 +61,14 @@ export function useCart() {
     }
     saveCart(current)
 
-    // Meta Pixel: AddToCart event
-    if (product.price_ghs > 0 && quantity > 0) {
+    const effectivePrice = variant?.price_ghs && variant.price_ghs > 0 ? variant.price_ghs : product.price_ghs
+    if (effectivePrice > 0 && quantity > 0) {
       trackEvent("add_to_cart", product.slug)
       MetaPixel.addToCart({
         content_ids: [product.id],
         content_name: product.name,
         content_type: "product",
-        value: product.price_ghs * quantity,
+        value: effectivePrice * quantity,
         currency: "GHS",
         num_items: quantity,
       })
@@ -65,25 +76,25 @@ export function useCart() {
         TikTokPixel.addToCart({
           content_id: product.id,
           content_name: product.name,
-          value: product.price_ghs * quantity,
+          value: effectivePrice * quantity,
           currency: "GHS",
           quantity,
         })
       } catch (_) {}
     }
+  }, [trackEvent])
+
+  const removeItem = useCallback((productId: string, variantId?: string) => {
+    saveCart(loadCart().filter(i => !itemMatch(i, { productId, variantId })))
   }, [])
 
-  const removeItem = useCallback((productId: string) => {
-    saveCart(loadCart().filter(i => i.product.id !== productId))
-  }, [])
-
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
+  const updateQuantity = useCallback((productId: string, quantity: number, variantId?: string) => {
     if (quantity < 1) {
-      removeItem(productId)
+      removeItem(productId, variantId)
       return
     }
     const current = loadCart()
-    const idx = current.findIndex(i => i.product.id === productId)
+    const idx = current.findIndex(i => itemMatch(i, { productId, variantId }))
     if (idx >= 0) {
       current[idx].quantity = quantity
       saveCart(current)
@@ -96,7 +107,7 @@ export function useCart() {
   }, [])
 
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0)
-  const total = items.reduce((sum, i) => sum + i.product.price_ghs * i.quantity, 0)
+  const total = items.reduce((sum, i) => sum + unitPrice(i) * i.quantity, 0)
 
   return { items, itemCount, total, addItem, removeItem, updateQuantity, clearCart, mounted }
 }
