@@ -80,7 +80,7 @@ export default function Header() {
             {cartOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setCartOpen(false)} />
-                <div className="absolute right-0 top-full mt-2 w-[360px] md:w-[420px] bg-white border rounded-xl shadow-2xl z-50 max-h-[80vh] flex flex-col">
+                <div className="fixed right-4 top-[7.5rem] w-[360px] md:w-[420px] bg-white border rounded-xl shadow-2xl z-[200] max-h-[70vh] flex flex-col">
                   <div className="p-4 border-b font-semibold text-base flex items-center justify-between shrink-0">
                     <span>Shopping Cart ({itemCount} items)</span>
                     <button onClick={() => setCartOpen(false)} className="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
@@ -198,3 +198,4 @@ export default function Header() {
     </header>
   )
 }
+
