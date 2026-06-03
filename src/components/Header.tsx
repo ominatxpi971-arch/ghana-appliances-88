@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useEffect } from "react"
 import { formatPrice } from "@/lib/utils"
@@ -19,7 +19,6 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ]
 
-/** Effective unit price for a cart item (variant price if set, otherwise product price). */
 function itemUnitPrice(item: ReturnType<typeof useCartContext>["items"][number]): number {
   if (item.variant?.price_ghs && item.variant.price_ghs > 0) return item.variant.price_ghs
   return item.product.price_ghs
@@ -81,44 +80,48 @@ export default function Header() {
             {cartOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setCartOpen(false)} />
-                <div className="absolute right-0 top-full mt-2 w-full max-w-sm bg-white border rounded-xl shadow-2xl z-50 max-h-[80vh] flex flex-col">
-                  <div className="p-4 border-b font-semibold flex items-center justify-between">
+                <div className="absolute right-0 top-full mt-2 w-[360px] md:w-[420px] bg-white border rounded-xl shadow-2xl z-50 max-h-[80vh] flex flex-col">
+                  <div className="p-4 border-b font-semibold text-base flex items-center justify-between shrink-0">
                     <span>Shopping Cart ({itemCount} items)</span>
-                    <button onClick={() => setCartOpen(false)} className="text-gray-400 hover:text-gray-600 text-lg">&times;</button>
+                    <button onClick={() => setCartOpen(false)} className="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
                   </div>
                   {items.length === 0 ? (
                     <div className="flex-1 flex items-center justify-center text-gray-400 p-12">
                       <div className="text-center">
-                        <ShoppingCart className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                        <p>Your cart is empty</p>
+                        <ShoppingCart className="h-14 w-14 mx-auto mb-3 opacity-50" />
+                        <p className="text-base">Your cart is empty</p>
                       </div>
                     </div>
                   ) : (
                     <>
-                      <div className="flex-1 overflow-auto py-4 px-4">
+                      <div className="flex-1 overflow-y-auto py-3 px-4">
                         {items.map(item => {
                           const price = itemUnitPrice(item)
                           return (
-                          <div key={item.product.id + "-" + (item.variant_id || "no-variant")} className="flex gap-3 py-3 border-b last:border-b-0">
-                            <div className="h-16 w-16 bg-gray-100 rounded flex-shrink-0 overflow-hidden relative">
+                          <div key={item.product.id + "-" + (item.variant_id || "no-variant")} className="flex gap-4 py-4 border-b last:border-b-0">
+                            <div className="h-20 w-20 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden relative">
                               {item.product.images?.[0]
-                                ? <NextImage src={item.product.images[0]} alt={item.product.name} fill sizes="64px" className="object-cover" />
-                                : <span className="h-full w-full flex items-center justify-center text-2xl">??</span>
+                                ? <NextImage src={item.product.images[0]} alt={item.product.name} fill sizes="80px" className="object-cover" />
+                                : <span className="h-full w-full flex items-center justify-center text-3xl">📦</span>
                               }
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium truncate">{item.product.name}</p>
-                              {item.variant && (
-                                <p className="text-xs text-gray-400">{item.variant.name}{item.variant.sku ? ` (${item.variant.sku})` : ""}</p>
-                              )}
-                              <p className="text-sm text-amber-600 font-bold">{formatPrice(price)}</p>
-                              <div className="flex items-center gap-2 mt-1">
-                                <button onClick={() => updateQuantity(item.product.id, item.quantity - 1, item.variant_id)} className="h-6 w-6 rounded border text-xs hover:bg-gray-100">-</button>
-                                <span className="text-sm w-6 text-center">{item.quantity}</span>
-                                <button onClick={() => updateQuantity(item.product.id, item.quantity + 1, item.variant_id)} className="h-6 w-6 rounded border text-xs hover:bg-gray-100">+</button>
+                            <div className="flex-1 min-w-0 flex flex-col justify-between">
+                              <div>
+                                <p className="text-sm font-medium leading-snug line-clamp-2">{item.product.name}</p>
+                                {item.variant && (
+                                  <p className="text-xs text-gray-400 mt-0.5">{item.variant.name}{item.variant.sku ? ` (${item.variant.sku})` : ""}</p>
+                                )}
+                              </div>
+                              <div className="flex items-center justify-between mt-1">
+                                <p className="text-sm text-amber-600 font-bold">{formatPrice(price)}</p>
+                                <div className="flex items-center gap-2">
+                                  <button onClick={() => updateQuantity(item.product.id, item.quantity - 1, item.variant_id)} className="h-7 w-7 rounded border text-sm hover:bg-gray-100 flex items-center justify-center">−</button>
+                                  <span className="text-sm w-5 text-center font-medium">{item.quantity}</span>
+                                  <button onClick={() => updateQuantity(item.product.id, item.quantity + 1, item.variant_id)} className="h-7 w-7 rounded border text-sm hover:bg-gray-100 flex items-center justify-center">+</button>
+                                </div>
                               </div>
                             </div>
-                            <button onClick={() => removeItem(item.product.id, item.variant_id)} className="text-gray-400 hover:text-red-500">
+                            <button onClick={() => removeItem(item.product.id, item.variant_id)} className="text-gray-400 hover:text-red-500 self-start mt-1 flex-shrink-0">
                               <X className="h-4 w-4" />
                             </button>
                           </div>
@@ -126,13 +129,13 @@ export default function Header() {
                         })}
                       </div>
                       <Separator />
-                      <div className="p-4 space-y-3">
-                        <div className="flex justify-between text-lg font-bold">
+                      <div className="p-4 space-y-3 shrink-0">
+                        <div className="flex justify-between text-base font-bold">
                           <span>Total</span>
                           <span className="text-amber-600">{formatPrice(total)}</span>
                         </div>
                         <Link href="/checkout" onClick={() => setCartOpen(false)}
-                          className="inline-flex items-center justify-center w-full rounded-lg text-sm font-medium bg-amber-500 text-white hover:bg-amber-600 h-10 px-4 transition-colors">
+                          className="inline-flex items-center justify-center w-full rounded-lg text-sm font-semibold bg-amber-500 text-white hover:bg-amber-600 h-11 px-4 transition-colors">
                           Proceed to Checkout
                         </Link>
                       </div>
