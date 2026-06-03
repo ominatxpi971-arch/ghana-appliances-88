@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getSettings } from '@/lib/db'
+﻿import { NextRequest, NextResponse } from "next/server"
+import { getSettings } from "@/lib/db"
 
-const COOKIE_NAME = '__Host-admin_auth_token'
-const TOKEN_DURATION_MS = 8 * 60 * 60 * 1000 // 8 hours
+export const COOKIE_NAME = "__Host-admin_auth_token"
+export const TOKEN_DURATION_MS = 8 * 60 * 60 * 1000 // 8 hours
 
 interface BlacklistEntry {
   token: string
@@ -19,34 +19,34 @@ function getSecret(): string {
 async function signPayload(payload: string): Promise<string> {
   const enc = new TextEncoder()
   const key = await crypto.subtle.importKey(
-    'raw',
+    "raw",
     enc.encode(getSecret()),
-    { name: 'HMAC', hash: 'SHA-256' },
+    { name: "HMAC", hash: "SHA-256" },
     false,
-    ['sign']
+    ["sign"]
   )
-  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(payload))
+  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(payload))
   return btoa(String.fromCharCode(...new Uint8Array(sig)))
 }
 
 export async function createToken(): Promise<string> {
   const payload = JSON.stringify({
-    role: 'admin',
+    role: "admin",
     iat: Date.now(),
     exp: Date.now() + TOKEN_DURATION_MS,
   })
-  const encoded = Buffer.from(payload).toString('base64url')
+  const encoded = Buffer.from(payload).toString("base64url")
   const sig = await signPayload(encoded)
   return `${encoded}.${sig}`
 }
 
 export async function verifyToken(token: string): Promise<boolean> {
   try {
-    const [encoded, sig] = token.split('.')
+    const [encoded, sig] = token.split(".")
     if (!encoded || !sig) return false
     if (await signPayload(encoded) !== sig) return false
-    const payload = JSON.parse(Buffer.from(encoded, 'base64url').toString())
-    if (payload.role !== 'admin') return false
+    const payload = JSON.parse(Buffer.from(encoded, "base64url").toString())
+    if (payload.role !== "admin") return false
     if (Date.now() > payload.exp) return false
 
     // Check if token has been revoked
@@ -72,19 +72,19 @@ export async function verifyToken(token: string): Promise<boolean> {
 export async function setAuthCookie(response: NextResponse): Promise<void> {
   response.cookies.set(COOKIE_NAME, await createToken(), {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
     maxAge: TOKEN_DURATION_MS / 1000,
   })
 }
 
 export function clearAuthCookie(response: NextResponse): void {
-  response.cookies.set(COOKIE_NAME, '', {
+  response.cookies.set(COOKIE_NAME, "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
     maxAge: 0,
   })
 }

@@ -1,5 +1,5 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
-import { validateAdminRequest } from '@/lib/auth'
+import { validateAdminRequest, createToken, COOKIE_NAME, TOKEN_DURATION_MS } from '@/lib/auth'
 
 // API routes that accept POST from public (non-admin)
 const PUBLIC_POST_ROUTES = new Set([
@@ -15,7 +15,6 @@ const PUBLIC_POST_ROUTES = new Set([
 const SENSITIVE_GET_ROUTES = new Set([
   '/api/export-orders',
   '/api/gsc',
-  '/api/settings',
   '/api/coupons',
 ])
 
@@ -29,8 +28,25 @@ const LOGIN_MAX_ATTEMPTS = 5
 const LOGIN_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const { pathname, searchParams } = request.nextUrl
   const method = request.method
+
+  // ---- Admin quick-login via ?key=SECRET ----
+  const secretKey = process.env.ADMIN_SECRET_KEY
+  if (pathname === '/admin' && secretKey && searchParams.get('key') === secretKey) {
+    const token = await createToken()
+    const url = new URL('/admin', request.url)
+    url.search = '' // strip the key from URL
+    const response = NextResponse.redirect(url)
+    response.cookies.set(COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: TOKEN_DURATION_MS / 1000,
+    })
+    return response
+  }
 
   // Protect admin page routes - redirect to login if not authenticated
   if (pathname.startsWith('/admin/') && pathname !== '/admin/login') {
