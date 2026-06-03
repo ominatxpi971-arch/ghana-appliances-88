@@ -1,6 +1,6 @@
-'use client'
+﻿'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { CartItem, Product, ProductVariant } from '@/lib/types'
 import { MetaPixel, TikTokPixel } from '@/lib/pixel'
 import { useAnalytics } from '@/hooks/use-analytics'
@@ -35,6 +35,10 @@ function itemMatch(a: CartItem, b: { productId: string; variantId?: string }): b
 
 export function useCart() {
   const { trackEvent } = useAnalytics()
+  // Stable ref so addItem never re-creates due to analytics
+  const trackEventRef = useRef(trackEvent)
+  trackEventRef.current = trackEvent
+
   const [items, setItems] = useState<CartItem[]>([])
   const [mounted, setMounted] = useState(false)
 
@@ -63,15 +67,18 @@ export function useCart() {
 
     const effectivePrice = variant?.price_ghs && variant.price_ghs > 0 ? variant.price_ghs : product.price_ghs
     if (effectivePrice > 0 && quantity > 0) {
-      trackEvent("add_to_cart", product.slug)
-      MetaPixel.addToCart({
-        content_ids: [product.id],
-        content_name: product.name,
-        content_type: "product",
-        value: effectivePrice * quantity,
-        currency: "GHS",
-        num_items: quantity,
-      })
+      // Analytics and pixel calls are fire-and-forget — never block cart operations
+      try { trackEventRef.current("add_to_cart", product.slug) } catch (_) {}
+      try {
+        MetaPixel.addToCart({
+          content_ids: [product.id],
+          content_name: product.name,
+          content_type: "product",
+          value: effectivePrice * quantity,
+          currency: "GHS",
+          num_items: quantity,
+        })
+      } catch (_) {}
       try {
         TikTokPixel.addToCart({
           content_id: product.id,
@@ -82,7 +89,7 @@ export function useCart() {
         })
       } catch (_) {}
     }
-  }, [trackEvent])
+  }, []) // stable — never re-creates due to analytics changes
 
   const removeItem = useCallback((productId: string, variantId?: string) => {
     saveCart(loadCart().filter(i => !itemMatch(i, { productId, variantId })))
