@@ -69,6 +69,15 @@ function getClientIP(request: NextRequest): string {
     "unknown"
 }
 
+function getGeo(request: NextRequest): { country: string; region: string; city: string } {
+  return {
+    country: request.headers.get("x-vercel-ip-country") || "",
+    region: request.headers.get("x-vercel-ip-country-region") || "",
+    city: request.headers.get("x-vercel-ip-city") || "",
+  }
+}
+
+
 async function insertLogSafe(supabase: ReturnType<typeof createAdminClient>, row: Record<string, unknown>) {
   const { error } = await supabase.from("visitor_logs").insert(row)
   if (!error) return { ok: true }
@@ -108,6 +117,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const ip = body.ip || getClientIP(request)
+    const geo = getGeo(request)
     const {
       path, referrer, userAgent, eventType, eventLabel, sessionId,
       country, region, city, searchQuery,
@@ -121,9 +131,9 @@ export async function POST(request: NextRequest) {
     const supabase = createAdminClient()
     const result = await insertLogSafe(supabase, {
       ip,
-      country: country || "",
-      region: region || "",
-      city: city || "",
+      country: country || geo.country,
+      region: region || geo.region,
+      city: city || geo.city,
       path: path || "/",
       referrer: referrer || "",
       user_agent: userAgent || request.headers.get("user-agent") || "",
