@@ -1,12 +1,12 @@
-﻿"use client"
+"use client"
 
-import { useState, useEffect } from "react"
-// i18n removed "@/lib/i18n"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { VisitorLog } from "@/lib/types"
-import { Users, Globe, Eye, TrendingUp, MapPin, Clock } from "lucide-react"
+import { Users, Globe, Eye, TrendingUp, MapPin, Clock, ChevronLeft, ChevronRight, Calendar } from "lucide-react"
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, Legend
@@ -27,26 +27,71 @@ interface VisitorStats {
   geoDistribution: { name: string; value: number }[]
   hourlyDistribution: { hour: string; visits: number }[]
   dailyTrend: { date: string; visits: number }[]
+  pagination: { page: number; pageSize: number; totalPages: number; total: number }
+  dateRange: { dateFrom: string; dateTo: string }
+}
+
+function getDefaultDateRange() {
+  const to = new Date()
+  const from = new Date()
+  from.setDate(from.getDate() - 30)
+  return {
+    from: from.toISOString().slice(0, 10),
+    to: to.toISOString().slice(0, 10),
+  }
 }
 
 export default function VisitorsTab() {
-  const t = (k: string) => k
   const [data, setData] = useState<VisitorStats | null>(null)
   const [subtab, setSubtab] = useState("map")
+  const [dateFrom, setDateFrom] = useState(getDefaultDateRange().from)
+  const [dateTo, setDateTo] = useState(getDefaultDateRange().to)
+  const [page, setPage] = useState(1)
 
-  useEffect(() => {
-    fetch("/api/analytics/visitors").then(r => r.json()).then(setData).catch(() => {})
-  }, [])
+  const fetchData = useCallback(async () => {
+    const params = new URLSearchParams({ dateFrom, dateTo, page: String(page), pageSize: "50" })
+    const res = await fetch(`/api/analytics/visitors?${params}`)
+    if (res.ok) setData(await res.json())
+  }, [dateFrom, dateTo, page])
+
+  useEffect(() => { fetchData() }, [fetchData])
+
+  // Reset page when date range changes
+  useEffect(() => { setPage(1) }, [dateFrom, dateTo])
 
   if (!data) return <div className="py-10 text-center text-gray-400">Loading visitor analytics...</div>
 
+  const { pagination } = data
+
   return (
     <div className="space-y-6">
+      {/* Date range picker */}
+      <div className="flex flex-wrap items-center gap-3 bg-white rounded-xl border p-4">
+        <Calendar className="h-4 w-4 text-gray-400" />
+        <label className="text-sm text-gray-500">From</label>
+        <input
+          type="date"
+          value={dateFrom}
+          onChange={e => setDateFrom(e.target.value)}
+          className="border rounded-lg px-3 py-1.5 text-sm"
+        />
+        <label className="text-sm text-gray-500">To</label>
+        <input
+          type="date"
+          value={dateTo}
+          onChange={e => setDateTo(e.target.value)}
+          className="border rounded-lg px-3 py-1.5 text-sm"
+        />
+        <span className="text-xs text-gray-400 ml-auto">
+          {pagination.total.toLocaleString()} records
+        </span>
+      </div>
+
       {/* Stat cards */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Total Page Views", value: data.pageViews, icon: Eye, color: "text-blue-600", bg: "bg-blue-100" },
-          { label: "Today's Visitors", value: data.todayVisitors, icon: Users, color: "text-green-600", bg: "bg-green-100" },
+          { label: "Today''s Visitors", value: data.todayVisitors, icon: Users, color: "text-green-600", bg: "bg-green-100" },
           { label: "Total Events", value: data.totalVisitors, icon: TrendingUp, color: "text-purple-600", bg: "bg-purple-100" },
           { label: "Unique Pages", value: data.topPages.length, icon: Globe, color: "text-amber-600", bg: "bg-amber-100" },
         ].map(s => (
@@ -72,14 +117,13 @@ export default function VisitorsTab() {
 
         <TabsContent value="map">
           <div className="grid lg:grid-cols-2 gap-6 mt-0">
-            {/* Geo pie chart */}
             <Card>
               <CardContent className="p-6">
                 <h3 className="font-semibold mb-4 flex items-center gap-2"><MapPin className="h-4 w-4 text-amber-500" /> Visitor Locations</h3>
                 {data.geoDistribution.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
-                      <Pie data={data.geoDistribution} cx="50%" cy="50%" outerRadius={100} dataKey="value" nameKey="name" label={({ name, value }) => `${(name||'').split(',')[0]}: ${value}`}>
+                      <Pie data={data.geoDistribution} cx="50%" cy="50%" outerRadius={100} dataKey="value" nameKey="name" label={({ name, value }) => `${(name||"").split(",")[0]}: ${value}`}>
                         {data.geoDistribution.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                       </Pie>
                       <Tooltip />
@@ -88,8 +132,6 @@ export default function VisitorsTab() {
                 ) : <p className="text-gray-400 text-sm py-8 text-center">No geo data yet</p>}
               </CardContent>
             </Card>
-
-            {/* Geo bar chart */}
             <Card>
               <CardContent className="p-6">
                 <h3 className="font-semibold mb-4 flex items-center gap-2"><Globe className="h-4 w-4 text-amber-500" /> Cities Breakdown</h3>
@@ -98,12 +140,12 @@ export default function VisitorsTab() {
                     <BarChart data={data.geoDistribution.slice(0, 10)} layout="vertical">
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                       <XAxis type="number" tick={{ fontSize: 11 }} />
-                      <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={100} />
+                      <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={100} />
                       <Tooltip />
-                      <Bar dataKey="value" name="Visitors" fill="#f59e0b" radius={[0, 4, 4, 0]} />
+                      <Bar dataKey="value" fill="#f59e0b" radius={[0, 4, 4, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
-                ) : <p className="text-gray-400 text-sm py-8 text-center">No geo data yet</p>}
+                ) : <p className="text-gray-400 text-sm py-8 text-center">No cities data yet</p>}
               </CardContent>
             </Card>
           </div>
@@ -112,7 +154,7 @@ export default function VisitorsTab() {
         <TabsContent value="trend">
           <Card>
             <CardContent className="p-6">
-              <h3 className="font-semibold mb-4">Daily Visitors (Last 30 Days)</h3>
+              <h3 className="font-semibold mb-4">Daily Visitors</h3>
               {data.dailyTrend.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={data.dailyTrend}>
@@ -132,7 +174,7 @@ export default function VisitorsTab() {
         <TabsContent value="hours">
           <Card>
             <CardContent className="p-6">
-              <h3 className="font-semibold mb-4">Peak Visit Hours (Last 7 Days)</h3>
+              <h3 className="font-semibold mb-4">Peak Visit Hours</h3>
               {data.hourlyDistribution.length > 0 ? (
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={data.hourlyDistribution}>
@@ -185,7 +227,31 @@ export default function VisitorsTab() {
       {/* Recent Visitors Table */}
       <Card>
         <CardContent className="p-6">
-          <h3 className="font-semibold mb-4">Recent Visitors</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold">Recent Visitors</h3>
+            {/* Pagination controls */}
+            <div className="flex items-center gap-2 text-sm">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page <= 1}
+                onClick={() => setPage(p => p - 1)}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <span className="text-gray-500 px-2">
+                Page {pagination.page} / {pagination.totalPages || 1}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page >= pagination.totalPages}
+                onClick={() => setPage(p => p + 1)}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b">
@@ -201,7 +267,7 @@ export default function VisitorsTab() {
                 {data.recentVisitors.map((v, i) => (
                   <tr key={i} className="hover:bg-gray-50">
                     <td className="p-2 font-mono text-xs">{v.ip}</td>
-                    <td className="p-2 text-xs">{[v.city, v.country].filter(Boolean).join(", ") || "—"}</td>
+                    <td className="p-2 text-xs">{[v.city, v.country].filter(Boolean).join(", ") || "\u2014"}</td>
                     <td className="p-2 text-xs truncate max-w-[200px]">{v.path}</td>
                     <td className="p-2"><Badge className={EVENT_COLORS[v.event_type] || ""}>{v.event_type}</Badge></td>
                     <td className="p-2 text-right text-xs text-gray-400">{new Date(v.created_at).toLocaleString()}</td>
@@ -211,6 +277,20 @@ export default function VisitorsTab() {
               </tbody>
             </table>
           </div>
+          {/* Bottom pagination */}
+          {pagination.totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-4 text-sm">
+              <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>
+                <ChevronLeft className="h-4 w-4 mr-1" /> Previous
+              </Button>
+              <span className="text-gray-500 px-3">
+                {pagination.page} / {pagination.totalPages}
+              </span>
+              <Button variant="outline" size="sm" disabled={page >= pagination.totalPages} onClick={() => setPage(p => p + 1)}>
+                Next <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
