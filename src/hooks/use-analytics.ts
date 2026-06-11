@@ -42,7 +42,13 @@ function getUtmParams(): Record<string, string> {
 export function useAnalytics() {
   const pathname = usePathname()
   const lastPath = useRef(pathname)
+  const sessionRef = useRef(sessionId)
 
+  useEffect(() => {
+    sessionRef.current = sessionId
+  }, [])
+
+  // Pageview tracking on route change
   useEffect(() => {
     if (lastPath.current === pathname) return
     lastPath.current = pathname
@@ -57,10 +63,49 @@ export function useAnalytics() {
         referrer: document.referrer || "",
         userAgent: navigator.userAgent,
         eventType: "pageview",
-        sessionId,
+        sessionId: sessionRef.current,
         ...utm,
       }),
     }).catch(() => {})
+  }, [pathname])
+
+  // Global click tracking for user interaction clicks
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      const clickable = target.closest("a, button, [role='button'], .product-card, input[type='submit']")
+      if (!clickable) return
+
+      let label = ""
+      if (clickable instanceof HTMLAnchorElement) {
+        label = clickable.href || clickable.textContent?.trim().slice(0, 100) || "link"
+      } else if (clickable instanceof HTMLButtonElement) {
+        label = clickable.textContent?.trim().slice(0, 100) || clickable.name || "button"
+      } else if (clickable instanceof HTMLInputElement) {
+        label = clickable.value || clickable.name || "input"
+      } else {
+        label = clickable.textContent?.trim().slice(0, 100) || "element"
+      }
+
+      const utm = getUtmParams()
+
+      fetch("/api/analytics/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          path: pathname,
+          referrer: document.referrer || "",
+          userAgent: navigator.userAgent,
+          eventType: "click",
+          eventLabel: label,
+          sessionId: sessionRef.current,
+          ...utm,
+        }),
+      }).catch(() => {})
+    }
+
+    document.addEventListener("click", handleClick, true)
+    return () => document.removeEventListener("click", handleClick, true)
   }, [pathname])
 
   const trackEvent = useCallback((eventType: string, eventLabel?: string): void => {
@@ -76,7 +121,7 @@ export function useAnalytics() {
           userAgent: navigator.userAgent,
           eventType,
           eventLabel: eventLabel || "",
-          sessionId,
+          sessionId: sessionRef.current,
           ...utm,
         }),
       }).catch(() => {})
@@ -98,7 +143,7 @@ export function useAnalytics() {
           eventLabel: query,
           searchQuery: query,
           resultsCount,
-          sessionId,
+          sessionId: sessionRef.current,
           ...utm,
         }),
       }).catch(() => {})

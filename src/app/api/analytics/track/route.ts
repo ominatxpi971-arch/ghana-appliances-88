@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server"
+﻿import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 interface UtmParams {
@@ -63,7 +63,10 @@ function classifySource(referrer: string, utm?: UtmParams): string {
 }
 
 function getClientIP(request: NextRequest): string {
-  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+  // Vercel passes real client IP via x-forwarded-for (comma-separated, first is client)
+  // Also check x-vercel-forwarded-for and x-real-ip for robustness
+  return request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     request.headers.get("x-real-ip") ||
     request.headers.get("cf-connecting-ip") ||
     "unknown"
