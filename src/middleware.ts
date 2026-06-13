@@ -9,6 +9,7 @@ const PUBLIC_POST_ROUTES = new Set([
   '/api/auth/login',
   '/api/auth/logout',
   '/api/analytics/track',
+  '/api/upload',
 ])
 
 // GET routes that require admin auth
