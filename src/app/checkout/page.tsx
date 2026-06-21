@@ -35,7 +35,7 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState("");
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "", country: "Ghana",
-    city: "", address: "", postalCode: ""
+    city: "", address: ""
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [couponCode, setCouponCode] = useState("");
@@ -106,7 +106,6 @@ export default function CheckoutPage() {
     if (!form.country.trim()) e.country = "Required";
     if (!form.city.trim()) e.city = "Required";
     if (!form.address.trim()) e.address = "Required";
-    if (!form.postalCode.trim()) e.postalCode = "Required";
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Invalid email";
     return Object.keys(e).length === 0;
   };
@@ -122,7 +121,6 @@ export default function CheckoutPage() {
       const addressParts = [
         form.address,
         form.city,
-        form.postalCode ? "Postal Code: " + form.postalCode : "",
         form.country
       ].filter(Boolean);
       const fullAddress = addressParts.join(", ");
@@ -294,13 +292,6 @@ export default function CheckoutPage() {
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <Label>Postal Code *</Label>
-                <Input placeholder="GA-123-4567" value={form.postalCode}
-                  onChange={e => setField("postalCode", e.target.value)}
-                  className={errors.postalCode ? "border-red-500" : ""} />
-                {errors.postalCode && <p className="text-xs text-red-500">{errors.postalCode}</p>}
-              </div>
             </div>
           </div>
 
