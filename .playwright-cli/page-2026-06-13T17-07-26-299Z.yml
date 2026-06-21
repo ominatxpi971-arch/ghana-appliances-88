@@ -1,0 +1,369 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]: Cash on Delivery - Pay When You Receive - Pay when you receive your order!
+    - generic [ref=e4]:
+      - link "Ghana Appliances Home" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: Ghana Appliances
+      - navigation "Main navigation" [ref=e9]:
+        - link "Home" [ref=e10] [cursor=pointer]:
+          - /url: /
+        - link "Products" [ref=e11] [cursor=pointer]:
+          - /url: /products
+        - link "Track Order" [ref=e12] [cursor=pointer]:
+          - /url: /track
+        - link "About" [ref=e13] [cursor=pointer]:
+          - /url: /about
+        - link "Contact" [ref=e14] [cursor=pointer]:
+          - /url: /contact
+        - link "Track" [ref=e15] [cursor=pointer]:
+          - /url: /track
+          - img [ref=e16]
+          - text: Track
+      - generic [ref=e19]:
+        - button [ref=e21]:
+          - img
+        - link "Sign In" [ref=e22] [cursor=pointer]:
+          - /url: /auth/login
+          - img [ref=e23]
+          - text: Sign In
+  - main [ref=e26]:
+    - generic [ref=e27]:
+      - navigation "Breadcrumb" [ref=e28]:
+        - list [ref=e29]:
+          - listitem [ref=e30]:
+            - link "Home" [ref=e31] [cursor=pointer]:
+              - /url: /
+              - img [ref=e32]
+              - generic [ref=e35]: Home
+          - listitem [ref=e36]:
+            - img [ref=e37]
+            - generic [ref=e39]: Products
+      - heading "All Products" [level=1] [ref=e40]
+      - paragraph [ref=e41]: 8 products available
+      - generic [ref=e42]:
+        - generic [ref=e43]:
+          - img [ref=e44]
+          - textbox "Search products..." [ref=e47]
+        - combobox [ref=e48]:
+          - generic [ref=e49]: all
+          - img: ▼
+        - textbox [ref=e50]: all
+        - combobox [ref=e51]:
+          - generic [ref=e52]: all
+          - img: ▼
+        - textbox [ref=e53]: all
+        - combobox [ref=e54]:
+          - generic [ref=e55]: all
+          - img: ▼
+        - textbox [ref=e56]: all
+        - combobox [ref=e57]:
+          - generic [ref=e58]: featured
+          - img: ▼
+        - textbox [ref=e59]: featured
+      - generic [ref=e60]:
+        - article [ref=e61]:
+          - generic [ref=e62]:
+            - button [ref=e63]:
+              - img [ref=e64]
+            - button [ref=e66]:
+              - img [ref=e67]
+            - link "Instant-Heating Electric Hot Water Faucet for Home Use – Free Shipping & Tax-Free - Buy in Ghana | COD -20%" [ref=e72] [cursor=pointer]:
+              - /url: /products/instant-heating-electric-hot-water-faucet-for-home-use-free-shipping-tax-free
+              - generic [ref=e73]:
+                - img "Instant-Heating Electric Hot Water Faucet for Home Use – Free Shipping & Tax-Free - Buy in Ghana | COD" [ref=e74]
+                - generic [ref=e75]: "-20%"
+                - button [ref=e76]:
+                  - img [ref=e77]
+            - generic [ref=e80]:
+              - paragraph [ref=e81]: small appliances
+              - link "Instant-Heating Electric Hot Water Faucet for Home Use – Free Shipping & Tax-Free" [ref=e82] [cursor=pointer]:
+                - /url: /products/instant-heating-electric-hot-water-faucet-for-home-use-free-shipping-tax-free
+                - heading "Instant-Heating Electric Hot Water Faucet for Home Use – Free Shipping & Tax-Free" [level=3] [ref=e83]
+              - generic [ref=e84]:
+                - generic [ref=e85]: GH₵ 480
+                - generic [ref=e86]: GH₵ 600
+              - generic [ref=e87]:
+                - button "Cart" [ref=e88]:
+                  - img
+                  - text: Cart
+                - button "Buy Now" [ref=e89]:
+                  - img
+                  - text: Buy Now
+        - article [ref=e90]:
+          - generic [ref=e91]:
+            - button [ref=e92]:
+              - img [ref=e93]
+            - button [ref=e95]:
+              - img [ref=e96]
+            - link "New Digital-Display L8 Model / Free Shipping & Tax-Free / Cash on Delivery - Buy in Ghana | COD -30%" [ref=e101] [cursor=pointer]:
+              - /url: /products/new-digital-display-l8-model-free-shipping-tax-free-cash-on-delivery
+              - generic [ref=e102]:
+                - img "New Digital-Display L8 Model / Free Shipping & Tax-Free / Cash on Delivery - Buy in Ghana | COD" [ref=e103]
+                - generic [ref=e104]: "-30%"
+                - button [ref=e105]:
+                  - img [ref=e106]
+            - generic [ref=e109]:
+              - paragraph [ref=e110]: small appliances
+              - link "New Digital-Display L8 Model / Free Shipping & Tax-Free / Cash on Delivery" [ref=e111] [cursor=pointer]:
+                - /url: /products/new-digital-display-l8-model-free-shipping-tax-free-cash-on-delivery
+                - heading "New Digital-Display L8 Model / Free Shipping & Tax-Free / Cash on Delivery" [level=3] [ref=e112]
+              - generic [ref=e113]:
+                - generic [ref=e114]: GH₵ 350
+                - generic [ref=e115]: GH₵ 500
+              - generic [ref=e116]:
+                - button "Cart" [ref=e117]:
+                  - img
+                  - text: Cart
+                - button "Buy Now" [ref=e118]:
+                  - img
+                  - text: Buy Now
+        - article [ref=e119]:
+          - generic [ref=e120]:
+            - button [ref=e121]:
+              - img [ref=e122]
+            - button [ref=e124]:
+              - img [ref=e125]
+            - link "White Mini Bluetooth Speaker / Free Shipping & Tax-Free - Buy in Ghana | COD" [ref=e130] [cursor=pointer]:
+              - /url: /products/white-mini-bluetooth-speaker-free-shipping-tax-free
+              - generic [ref=e131]:
+                - img "White Mini Bluetooth Speaker / Free Shipping & Tax-Free - Buy in Ghana | COD" [ref=e132]
+                - button [ref=e133]:
+                  - img [ref=e134]
+            - generic [ref=e137]:
+              - paragraph [ref=e138]: small appliances
+              - link "White Mini Bluetooth Speaker / Free Shipping & Tax-Free" [ref=e139] [cursor=pointer]:
+                - /url: /products/white-mini-bluetooth-speaker-free-shipping-tax-free
+                - heading "White Mini Bluetooth Speaker / Free Shipping & Tax-Free" [level=3] [ref=e140]
+              - generic [ref=e142]: GH₵ 290
+              - generic [ref=e143]:
+                - button "Cart" [ref=e144]:
+                  - img
+                  - text: Cart
+                - button "Buy Now" [ref=e145]:
+                  - img
+                  - text: Buy Now
+        - article [ref=e146]:
+          - generic [ref=e147]:
+            - button [ref=e148]:
+              - img [ref=e149]
+            - button [ref=e151]:
+              - img [ref=e152]
+            - link "Glass5 Mini Wireless Bluetooth Speaker/Free Shipping & No Tax - Buy in Ghana | COD -33%" [ref=e157] [cursor=pointer]:
+              - /url: /products/glass5-mini-wireless-bluetooth-speaker-free-shipping-no-tax
+              - generic [ref=e158]:
+                - img "Glass5 Mini Wireless Bluetooth Speaker/Free Shipping & No Tax - Buy in Ghana | COD" [ref=e159]
+                - generic [ref=e160]: "-33%"
+                - button [ref=e161]:
+                  - img [ref=e162]
+            - generic [ref=e165]:
+              - paragraph [ref=e166]: small appliances
+              - link "Glass5 Mini Wireless Bluetooth Speaker/Free Shipping & No Tax" [ref=e167] [cursor=pointer]:
+                - /url: /products/glass5-mini-wireless-bluetooth-speaker-free-shipping-no-tax
+                - heading "Glass5 Mini Wireless Bluetooth Speaker/Free Shipping & No Tax" [level=3] [ref=e168]
+              - generic [ref=e169]:
+                - generic [ref=e170]: GH₵ 300
+                - generic [ref=e171]: GH₵ 450
+              - generic [ref=e172]:
+                - button "Cart" [ref=e173]:
+                  - img
+                  - text: Cart
+                - button "Buy Now" [ref=e174]:
+                  - img
+                  - text: Buy Now
+        - article [ref=e175]:
+          - generic [ref=e176]:
+            - button [ref=e177]:
+              - img [ref=e178]
+            - button [ref=e180]:
+              - img [ref=e181]
+            - link "White Evaporative Air Cooler/Free Shipping & No Tax - Buy in Ghana | COD -36%" [ref=e186] [cursor=pointer]:
+              - /url: /products/white-evaporative-air-cooler
+              - generic [ref=e187]:
+                - img "White Evaporative Air Cooler/Free Shipping & No Tax - Buy in Ghana | COD" [ref=e188]
+                - generic [ref=e189]: "-36%"
+                - button [ref=e190]:
+                  - img [ref=e191]
+            - generic [ref=e194]:
+              - paragraph [ref=e195]: air conditioners
+              - link "White Evaporative Air Cooler/Free Shipping & No Tax" [ref=e196] [cursor=pointer]:
+                - /url: /products/white-evaporative-air-cooler
+                - heading "White Evaporative Air Cooler/Free Shipping & No Tax" [level=3] [ref=e197]
+              - generic [ref=e198]:
+                - generic [ref=e199]: GH₵ 350
+                - generic [ref=e200]: GH₵ 550
+              - generic [ref=e201]:
+                - button "Cart" [ref=e202]:
+                  - img
+                  - text: Cart
+                - button "Buy Now" [ref=e203]:
+                  - img
+                  - text: Buy Now
+        - article [ref=e204]:
+          - generic [ref=e205]:
+            - button [ref=e206]:
+              - img [ref=e207]
+            - button [ref=e209]:
+              - img [ref=e210]
+            - link "Smart Rice Cooker (Home Use) — 5L Multi-functional/Free Shipping & No Tax - Buy in Ghana | COD -26%" [ref=e215] [cursor=pointer]:
+              - /url: /products/smart-rice-cooker-home-use-5l-multi-functional
+              - generic [ref=e216]:
+                - img "Smart Rice Cooker (Home Use) — 5L Multi-functional/Free Shipping & No Tax - Buy in Ghana | COD" [ref=e217]
+                - generic [ref=e218]: "-26%"
+                - button [ref=e219]:
+                  - img [ref=e220]
+            - generic [ref=e223]:
+              - paragraph [ref=e224]: small appliances
+              - link "Smart Rice Cooker (Home Use) — 5L Multi-functional/Free Shipping & No Tax" [ref=e225] [cursor=pointer]:
+                - /url: /products/smart-rice-cooker-home-use-5l-multi-functional
+                - heading "Smart Rice Cooker (Home Use) — 5L Multi-functional/Free Shipping & No Tax" [level=3] [ref=e226]
+              - generic [ref=e227]:
+                - generic [ref=e228]: GH₵ 510
+                - generic [ref=e229]: GH₵ 688
+              - generic [ref=e230]:
+                - button "Cart" [ref=e231]:
+                  - img
+                  - text: Cart
+                - button "Buy Now" [ref=e232]:
+                  - img
+                  - text: Buy Now
+        - article [ref=e233]:
+          - generic [ref=e234]:
+            - button [ref=e235]:
+              - img [ref=e236]
+            - button [ref=e238]:
+              - img [ref=e239]
+            - link "black/Wireless Bluetooth Speaker/Free Shipping & No Tax - Buy in Ghana | COD" [ref=e244] [cursor=pointer]:
+              - /url: /products/wireless-bluetooth-speaker
+              - generic [ref=e245]:
+                - img "black/Wireless Bluetooth Speaker/Free Shipping & No Tax - Buy in Ghana | COD" [ref=e246]
+                - button [ref=e247]:
+                  - img [ref=e248]
+            - generic [ref=e251]:
+              - paragraph [ref=e252]: small appliances
+              - link "black/Wireless Bluetooth Speaker/Free Shipping & No Tax" [ref=e253] [cursor=pointer]:
+                - /url: /products/wireless-bluetooth-speaker
+                - heading "black/Wireless Bluetooth Speaker/Free Shipping & No Tax" [level=3] [ref=e254]
+              - generic [ref=e255]:
+                - generic [ref=e256]:
+                  - img [ref=e257]
+                  - img [ref=e259]
+                  - img [ref=e261]
+                  - img [ref=e263]
+                  - img [ref=e265]
+                - generic [ref=e267]: (4)
+              - generic [ref=e269]: GH₵ 310
+              - generic [ref=e270]:
+                - button "Cart" [ref=e271]:
+                  - img
+                  - text: Cart
+                - button "Buy Now" [ref=e272]:
+                  - img
+                  - text: Buy Now
+        - article [ref=e273]:
+          - generic [ref=e274]:
+            - button [ref=e275]:
+              - img [ref=e276]
+            - button [ref=e278]:
+              - img [ref=e279]
+            - link "Instant Fast Heating Electric Water Heater For Home Bathroom Shower| Free Shipping & No Tax - Buy in Ghana | COD" [ref=e284] [cursor=pointer]:
+              - /url: /products/instant-fast-heating-electric-water-heater-for-home-bathroom-shower-free-shipping-no-tax-47-off
+              - generic [ref=e285]:
+                - img "Instant Fast Heating Electric Water Heater For Home Bathroom Shower| Free Shipping & No Tax - Buy in Ghana | COD" [ref=e286]
+                - button [ref=e287]:
+                  - img [ref=e288]
+            - generic [ref=e291]:
+              - paragraph [ref=e292]: small appliances
+              - link "Instant Fast Heating Electric Water Heater For Home Bathroom Shower| Free Shipping & No Tax" [ref=e293] [cursor=pointer]:
+                - /url: /products/instant-fast-heating-electric-water-heater-for-home-bathroom-shower-free-shipping-no-tax-47-off
+                - heading "Instant Fast Heating Electric Water Heater For Home Bathroom Shower| Free Shipping & No Tax" [level=3] [ref=e294]
+              - generic [ref=e295]:
+                - generic [ref=e296]:
+                  - img [ref=e297]
+                  - img [ref=e299]
+                  - img [ref=e301]
+                  - img [ref=e303]
+                  - img [ref=e305]
+                - generic [ref=e307]: (2)
+              - generic [ref=e309]: GH₵ 500
+              - generic [ref=e310]:
+                - button "Cart" [ref=e311]:
+                  - img
+                  - text: Cart
+                - button "Buy Now" [ref=e312]:
+                  - img
+                  - text: Buy Now
+  - contentinfo [ref=e313]:
+    - generic [ref=e314]:
+      - generic [ref=e315]:
+        - generic [ref=e316]: Ghana Appliances
+        - paragraph [ref=e317]: Ghana Appliances is your trusted source for quality home appliances. We offer genuine products from top brands with nationwide cash-on-delivery.
+      - generic [ref=e318]:
+        - heading "Shop" [level=4] [ref=e319]
+        - list [ref=e320]:
+          - listitem [ref=e321]:
+            - link "All Products" [ref=e322] [cursor=pointer]:
+              - /url: /products
+          - listitem [ref=e323]:
+            - link "Televisions" [ref=e324] [cursor=pointer]:
+              - /url: /products?category=televisions
+          - listitem [ref=e325]:
+            - link "Air Conditioners" [ref=e326] [cursor=pointer]:
+              - /url: /products?category=air-conditioners
+          - listitem [ref=e327]:
+            - link "Refrigerators" [ref=e328] [cursor=pointer]:
+              - /url: /products?category=refrigerators
+      - generic [ref=e329]:
+        - heading "Support" [level=4] [ref=e330]
+        - list [ref=e331]:
+          - listitem [ref=e332]:
+            - link "Track Order" [ref=e333] [cursor=pointer]:
+              - /url: /track
+          - listitem [ref=e334]:
+            - link "Contact Us" [ref=e335] [cursor=pointer]:
+              - /url: /contact
+          - listitem [ref=e336]:
+            - link "FAQ" [ref=e337] [cursor=pointer]:
+              - /url: /faq
+          - listitem [ref=e338]:
+            - link "About Us" [ref=e339] [cursor=pointer]:
+              - /url: /about
+      - generic [ref=e340]:
+        - heading "Policies" [level=4] [ref=e341]
+        - list [ref=e342]:
+          - listitem [ref=e343]:
+            - link "Returns Policy" [ref=e344] [cursor=pointer]:
+              - /url: /returns
+          - listitem [ref=e345]:
+            - link "Privacy Policy" [ref=e346] [cursor=pointer]:
+              - /url: /privacy
+          - listitem [ref=e347]:
+            - link "Terms & Conditions" [ref=e348] [cursor=pointer]:
+              - /url: /terms
+      - generic [ref=e349]:
+        - heading "Contact" [level=4] [ref=e350]
+        - list [ref=e351]:
+          - listitem [ref=e352]:
+            - img [ref=e353]
+            - link "+8618142871306" [ref=e355] [cursor=pointer]:
+              - /url: tel:+8618142871306
+          - listitem [ref=e356]:
+            - img [ref=e357]
+            - link "18218013738@163.com" [ref=e360] [cursor=pointer]:
+              - /url: mailto:18218013738@163.com
+          - listitem [ref=e361]:
+            - img [ref=e362]
+            - generic [ref=e365]: Accra, Ghana
+    - generic [ref=e366]: © 2026 Ghana Appliances. COD available nationwide. Free delivery in Greater Accra.
+  - button [ref=e368]:
+    - img [ref=e369]
+  - region "Notifications alt+T"
+  - alert [ref=e371]
+  - generic [ref=e372]:
+    - paragraph [ref=e373]:
+      - text: We use cookies to improve your experience. By continuing, you agree to our
+      - link "Privacy Policy" [ref=e374] [cursor=pointer]:
+        - /url: /privacy
+      - text: .
+    - button "Accept" [ref=e375]
