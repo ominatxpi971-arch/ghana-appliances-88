@@ -208,7 +208,6 @@ export interface CustomerProfile {
   address?: string
   city: string
   region: string
-  postal_code: string
   created_at: string
 }
 

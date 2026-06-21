@@ -1,5 +1,5 @@
 -- ============================================
--- Ghana Appliances â€” Migration v2
+-- Ghana Appliances â€?Migration v2
 -- IP Tracking, Visitor Analytics, Customer Auth
 -- ============================================
 
@@ -37,7 +37,6 @@ CREATE TABLE IF NOT EXISTS customer_profiles (
   address TEXT DEFAULT '',
   city TEXT DEFAULT '',
   region TEXT DEFAULT '',
-  postal_code TEXT DEFAULT '',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
