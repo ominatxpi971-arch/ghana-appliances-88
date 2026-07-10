@@ -1,4 +1,4 @@
-﻿import { sendCapiPurchase } from "@/lib/capi"
+import { sendCapiPurchase } from "@/lib/capi"
 import { NextRequest, NextResponse } from "next/server"
 import { getOrders, getProducts, createOrder, updateProduct, useCoupon, getSettings, getVariants } from "@/lib/db"
 import { createAdminClient } from "@/lib/supabase/admin"
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
 
   // Server-side CAPI Purchase event (fire-and-forget)
   getSettings().then(settings => {
-    if (settings?.meta_pixel_id && settings?.meta_pixel_access_token && customer.email) {
+    if (settings?.meta_pixel_id && settings?.meta_pixel_access_token) {
       sendCapiPurchase({
         pixelId: settings.meta_pixel_id,
         accessToken: settings.meta_pixel_access_token,
