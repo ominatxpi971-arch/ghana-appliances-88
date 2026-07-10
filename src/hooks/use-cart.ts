@@ -1,9 +1,10 @@
-﻿"use client"
+"use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
 import { CartItem, Product, ProductVariant } from "@/lib/types"
 import { MetaPixel, TikTokPixel } from "@/lib/pixel"
 import { useAnalytics } from "@/hooks/use-analytics"
+import { sendCapiClientEvent } from "@/lib/capi-client"
 
 const CART_KEY = "ghana-appliances-cart"
 
@@ -75,6 +76,7 @@ export function useCart() {
     if (effectivePrice > 0 && quantity > 0) {
       try { trackEventRef.current("add_to_cart", product.slug) } catch (_) {}
       try { MetaPixel.addToCart({ content_ids: [product.id], content_name: product.name, content_type: "product", value: effectivePrice * quantity, currency: "GHS", num_items: quantity }) } catch (_) {}
+    sendCapiClientEvent("AddToCart", { contentIds: [product.id], contentName: product.name, value: effectivePrice * quantity, numItems: quantity })
       try { TikTokPixel.addToCart({ content_id: product.id, content_name: product.name, value: effectivePrice * quantity, currency: "GHS", quantity }) } catch (_) {}
     }
   }, [])

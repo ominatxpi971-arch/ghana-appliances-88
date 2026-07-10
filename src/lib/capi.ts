@@ -76,6 +76,88 @@ export async function sendCapiEvent(
   }
 }
 
+// Helper: send AddToCart event
+export async function sendCapiAddToCart(params: {
+  pixelId: string
+  accessToken: string
+  eventSourceUrl?: string
+  customerEmail?: string
+  customerPhone?: string
+  clientIp?: string
+  clientUserAgent?: string
+  fbp?: string
+  fbc?: string
+  value?: number
+  currency?: string
+  contentIds?: string[]
+  contentName?: string
+  numItems?: number
+}): Promise<boolean> {
+  const userData: Record<string, string> = {}
+  if (params.customerEmail) userData.em = await sha256(params.customerEmail)
+  if (params.customerPhone) userData.ph = await sha256(params.customerPhone)
+  if (params.clientIp) userData.client_ip_address = params.clientIp
+  if (params.clientUserAgent) userData.client_user_agent = params.clientUserAgent
+  if (params.fbp) userData.fbp = params.fbp
+  if (params.fbc) userData.fbc = params.fbc
+
+  return sendCapiEvent(params.pixelId, params.accessToken, {
+    event_name: "AddToCart",
+    event_time: Math.floor(Date.now() / 1000),
+    event_source_url: params.eventSourceUrl,
+    action_source: "website",
+    user_data: userData,
+    custom_data: {
+      value: params.value,
+      currency: params.currency || "GHS",
+      content_ids: params.contentIds,
+      content_name: params.contentName,
+      num_items: params.numItems,
+    },
+  })
+}
+
+// Helper: send InitiateCheckout event
+export async function sendCapiInitiateCheckout(params: {
+  pixelId: string
+  accessToken: string
+  eventSourceUrl?: string
+  customerEmail?: string
+  customerPhone?: string
+  clientIp?: string
+  clientUserAgent?: string
+  fbp?: string
+  fbc?: string
+  value?: number
+  currency?: string
+  contentIds?: string[]
+  contents?: { id: string; quantity: number }[]
+  numItems?: number
+}): Promise<boolean> {
+  const userData: Record<string, string> = {}
+  if (params.customerEmail) userData.em = await sha256(params.customerEmail)
+  if (params.customerPhone) userData.ph = await sha256(params.customerPhone)
+  if (params.clientIp) userData.client_ip_address = params.clientIp
+  if (params.clientUserAgent) userData.client_user_agent = params.clientUserAgent
+  if (params.fbp) userData.fbp = params.fbp
+  if (params.fbc) userData.fbc = params.fbc
+
+  return sendCapiEvent(params.pixelId, params.accessToken, {
+    event_name: "InitiateCheckout",
+    event_time: Math.floor(Date.now() / 1000),
+    event_source_url: params.eventSourceUrl,
+    action_source: "website",
+    user_data: userData,
+    custom_data: {
+      value: params.value,
+      currency: params.currency || "GHS",
+      content_ids: params.contentIds,
+      contents: params.contents,
+      num_items: params.numItems,
+    },
+  })
+}
+
 // Helper: send Purchase event (server-side, after order creation)
 export async function sendCapiPurchase(params: {
   pixelId: string

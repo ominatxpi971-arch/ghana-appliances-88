@@ -25,12 +25,7 @@ function itemUnitPrice(item: ReturnType<typeof useCartContext>["items"][number])
 }
 
 
-/** Read Meta cookies for CAPI matching */
-function getMetaCookie(name: string): string {
-  if (typeof document === "undefined") return "";
-  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-  return match ? decodeURIComponent(match[2]) : "";
-}
+import { getMetaCookie, sendCapiClientEvent } from "@/lib/capi-client";
 
 
 export default function CheckoutPage() {
@@ -68,6 +63,12 @@ export default function CheckoutPage() {
           num_items: itemCount,
           value: finalTotal,
           currency: "GHS",
+        });
+        sendCapiClientEvent("InitiateCheckout", {
+          contentIds: items.map(i => i.product.id),
+          contents: items.map(i => ({ id: i.product.id, quantity: i.quantity })),
+          numItems: itemCount,
+          value: finalTotal,
         });
         try {
           TikTokPixel.initiateCheckout({
