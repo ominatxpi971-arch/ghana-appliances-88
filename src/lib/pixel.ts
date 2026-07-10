@@ -29,6 +29,11 @@ export function MetaPixelRouter() {
   return null
 }
 
+// Generate a unique event ID for browser/server deduplication
+export function generatePixelEventId(prefix: string): string {
+  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+}
+
 // E-commerce helper events (value & currency guaranteed clean)
 export const MetaPixel = {
   pageView() { fbq("track", "PageView") },
@@ -40,6 +45,7 @@ export const MetaPixel = {
     content_type?: string
     value?: number
     currency?: string
+    eventID?: string
   }) {
     fbq("track", "ViewContent", cleanParams({
       content_ids: params.content_ids,
@@ -48,7 +54,7 @@ export const MetaPixel = {
       content_type: params.content_type || "product",
       value: params.value,
       currency: params.currency || "GHS",
-    }))
+    }), params.eventID ? { eventID: params.eventID } : undefined)
   },
 
   addToCart(params: {
@@ -58,6 +64,7 @@ export const MetaPixel = {
     value?: number
     currency?: string
     num_items?: number
+    eventID?: string
   }) {
     fbq("track", "AddToCart", cleanParams({
       content_ids: params.content_ids,
@@ -66,7 +73,7 @@ export const MetaPixel = {
       value: params.value,
       currency: params.currency || "GHS",
       num_items: params.num_items,
-    }))
+    }), params.eventID ? { eventID: params.eventID } : undefined)
   },
 
   initiateCheckout(params: {
@@ -76,6 +83,7 @@ export const MetaPixel = {
     num_items?: number
     value?: number
     currency?: string
+    eventID?: string
   }) {
     fbq("track", "InitiateCheckout", cleanParams({
       content_ids: params.content_ids,
@@ -84,7 +92,7 @@ export const MetaPixel = {
       num_items: params.num_items,
       value: params.value,
       currency: params.currency || "GHS",
-    }))
+    }), params.eventID ? { eventID: params.eventID } : undefined)
   },
 
   purchase(params: {
@@ -94,6 +102,7 @@ export const MetaPixel = {
     value: number
     currency?: string
     order_id?: string
+    eventID?: string
   }) {
     fbq("track", "Purchase", cleanParams({
       content_ids: params.content_ids,
@@ -102,7 +111,7 @@ export const MetaPixel = {
       value: params.value,
       currency: params.currency || "GHS",
       order_id: params.order_id,
-    }))
+    }), params.eventID ? { eventID: params.eventID } : undefined)
   },
 
   search(params: { search_string?: string }) {
@@ -119,6 +128,7 @@ export const MetaPixel = {
     content_category?: string
     value?: number
     currency?: string
+    eventID?: string
   }) {
     fbq("track", "AddToWishlist", cleanParams({
       content_id: params.content_id,
@@ -127,7 +137,7 @@ export const MetaPixel = {
       content_type: "product",
       value: params.value,
       currency: params.currency || "GHS",
-    }))
+    }), params.eventID ? { eventID: params.eventID } : undefined)
   },
 }
 

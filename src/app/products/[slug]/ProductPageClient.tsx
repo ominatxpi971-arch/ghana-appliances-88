@@ -18,8 +18,9 @@ import ShareButtons from "@/components/ShareButtons"
 import { formatPrice } from "@/lib/utils"
 import type { Product, ProductVariant } from "@/lib/types"
 
-import { MetaPixel, TikTokPixel } from "@/lib/pixel"
+import { MetaPixel, TikTokPixel, generatePixelEventId } from "@/lib/pixel"
 import { useAnalytics } from "@/hooks/use-analytics"
+import { sendCapiClientEvent, generateEventId } from "@/lib/capi-client"
 
 interface ProductPageClientProps {
   product: Product
@@ -60,11 +61,23 @@ export default function ProductPageClient({ product, related }: ProductPageClien
 
   useEffect(() => {
     if (product.price_ghs > 0) {
+      const eventID = generateEventId("ViewContent")
       trackEvent("view_product", product.slug)
       MetaPixel.viewContent({
         content_ids: [product.id],
         content_name: product.name,
         content_category: product.category,
+        value: product.price_ghs,
+        currency: "GHS",
+        eventID,
+      })
+      // CAPI ViewContent for better ad optimization
+      sendCapiClientEvent("ViewContent", {
+        eventId: eventID,
+        eventSourceUrl: typeof window !== "undefined" ? window.location.href : "",
+        contentIds: [product.id],
+        contentName: product.name,
+        contentCategory: product.category,
         value: product.price_ghs,
         currency: "GHS",
       })
@@ -93,83 +106,83 @@ export default function ProductPageClient({ product, related }: ProductPageClien
       <div className="grid md:grid-cols-2 gap-8">
         <div className="min-w-0 w-full">
           <div className="aspect-square bg-gray-100 rounded-xl overflow-hidden mb-3 flex items-center justify-center relative w-full max-w-full">
-            {images.length > 0 ? <Image src={images[activeImage]} alt={productImageAlt} fill sizes="(max-width: 768px) calc(100vw - 2rem), 50vw" className="object-cover" priority /> : <span className="text-8xl">📝</span>}
+            {images.length > 0 ? <Image src={images[activeImage]} alt={productImageAlt} fill sizes="(max-width: 768px) calc(100vw - 2rem), 50vw" className="object-cover" priority /> : <span className="text-8xl">📦</span>}
             {images.length > 1 && (<><button onClick={() => setActiveImage(i => i > 0 ? i - 1 : images.length - 1)} className="absolute left-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/90 shadow-md flex items-center justify-center hover:bg-white z-10 border border-gray-200"><ChevronLeft className="h-5 w-5" /></button><button onClick={() => setActiveImage(i => i < images.length - 1 ? i + 1 : 0)} className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/90 shadow-md flex items-center justify-center hover:bg-white z-10 border border-gray-200"><ChevronRight className="h-5 w-5" /></button></>)}
           </div>
-          {images.length > 1 && (<div className="flex gap-2 overflow-x-auto pb-1">{images.map((url, i) => (<button key={i} onClick={() => setActiveImage(i)} className={`h-16 w-16 rounded-lg overflow-hidden border-2 flex-shrink-0 relative ${i === activeImage ? "border-amber-500" : "border-transparent hover:border-gray-300"}`}><Image src={url} alt={`${product.name} - view ${i + 1} | Ghana Appliances`} fill sizes="64px" className="object-cover" /></button>))}</div>)}
+          {images.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {images.map((img, i) => (
+                <button key={i} onClick={() => setActiveImage(i)} className={`h-16 w-16 rounded-lg overflow-hidden border-2 flex-shrink-0 ${i === activeImage ? "border-amber-500" : "border-transparent"}`}>
+                  <Image src={img} alt={`${product.name} ${i+1}`} width={64} height={64} className="object-cover h-full w-full" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div>
-          <p className="text-sm text-gray-500 uppercase tracking-wider mb-1">{product.category}</p>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 break-words">{product.name}</h1>
-          {brand && <p className="text-sm text-gray-500 mb-2" itemProp="brand">Brand: {brand}</p>}
-          <div className="mb-4">
-            {discount > 0 && product.original_price && (
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg text-gray-400 line-through">{formatPrice(product.original_price)}</span>
-                <Badge className="bg-red-500 -mt-0.5">-{discount}% OFF</Badge>
-              </div>
+          <h1 className="text-2xl font-bold mb-1">{product.name}</h1>
+          <p className="text-gray-500 text-sm mb-2 capitalize">{product.category}{brand ? ` · ${brand}` : ""}</p>
+          <div className="flex items-baseline gap-2 mb-4">
+            <span className="text-3xl font-bold text-amber-600">{formatPrice(displayPrice)}</span>
+            {product.original_price && product.original_price > displayPrice && (
+              <span className="text-lg text-gray-400 line-through">{formatPrice(product.original_price)}</span>
             )}
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-amber-600">{formatPrice(displayPrice)}</span>
-              {currentVariant?.price_ghs && currentVariant.price_ghs > 0 && currentVariant.price_ghs !== product.price_ghs && (
-                <span className="text-sm text-gray-400">(base: {formatPrice(product.price_ghs)})</span>
-              )}
-            </div>
-            {hasVariants && discount > 0 && (
-              <p className="text-xs text-green-600 mt-1">You save {formatPrice((product.original_price || displayPrice) - displayPrice)} vs original price</p>
-            )}
+            {discount > 0 && <Badge variant="destructive" className="ml-1">-{discount}%</Badge>}
           </div>
-          <p className="text-gray-600 mb-6 break-words whitespace-pre-wrap" itemProp="description">{product.description}</p>
 
-          {/* Variant Selector */}
+          <p className="text-gray-700 mb-6 whitespace-pre-line">{product.description}</p>
+
+          {/* Variant Selection */}
           {hasVariants && (
-            <div className="space-y-3 mb-6">
+            <div className="space-y-4 mb-6">
               {option1Values.length > 0 && (
                 <div>
-                  <p className="text-sm font-medium text-gray-700 mb-1.5">{option1Name}</p>
+                  <Label className="mb-2 block">{option1Name || "Option"}</Label>
                   <div className="flex flex-wrap gap-2">
-                    {option1Values.map((val: string) => (
-                      <button
-                        key={val}
-                        onClick={() => {
-                          setSelOpt1(val)
-                          const v = findVariant(val, selOpt2)
-                          setSelectedVariant(v)
-                        }}
-                        className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
-                          selOpt1 === val
-                            ? "border-amber-500 bg-amber-500 text-white"
-                            : "border-gray-200 hover:border-amber-300 text-gray-700"
-                        }`}
-                      >
-                        {val}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {option2Values.length > 0 && (
-                <div>
-                  <p className="text-sm font-medium text-gray-700 mb-1.5">{option2Name}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {option2Values.map((val: string) => {
-                      const avail = !selOpt1 || variants.some((v: ProductVariant) => v.option1_value === selOpt1 && v.option2_value === val)
+                    {option1Values.map(val => {
+                      const isSelected = selOpt1 === val
                       return (
                         <button
                           key={val}
+                          type="button"
+                          onClick={() => {
+                            setSelOpt1(val)
+                            const v = findVariant(val, selOpt2)
+                            setSelectedVariant(v)
+                          }}
+                          className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition-colors ${
+                            isSelected
+                              ? "border-amber-500 bg-amber-50 text-amber-700"
+                              : "border-gray-200 hover:border-gray-300"
+                          }`}
+                        >
+                          {val}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+              {option2Values.length > 0 && (
+                <div>
+                  <Label className="mb-2 block">{option2Name || "Option 2"}</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {option2Values.map(val => {
+                      const isSelected = selOpt2 === val
+                      return (
+                        <button
+                          key={val}
+                          type="button"
                           onClick={() => {
                             setSelOpt2(val)
                             const v = findVariant(selOpt1, val)
                             setSelectedVariant(v)
                           }}
-                          disabled={!avail}
-                          className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
-                            !avail ? "border-gray-100 text-gray-300 cursor-not-allowed" :
-                            selOpt2 === val
-                              ? "border-amber-500 bg-amber-500 text-white"
-                              : "border-gray-200 hover:border-amber-300 text-gray-700"
+                          className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition-colors ${
+                            isSelected
+                              ? "border-amber-500 bg-amber-50 text-amber-700"
+                              : "border-gray-200 hover:border-gray-300"
                           }`}
                         >
                           {val}
@@ -208,7 +221,7 @@ export default function ProductPageClient({ product, related }: ProductPageClien
         </div>
       </div>
 
-      {related.length > 0 && (<><Separator className="my-12" /><h2 className="text-2xl font-bold mb-6">Related Products</h2><div className="grid grid-cols-2 md:grid-cols-4 gap-4">{related.map(rp => (<Link key={rp.id} href={`/products/${rp.slug}`} className="group"><div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-2 group-hover:opacity-80 transition-opacity flex items-center justify-center relative">{rp.images?.[0] ? <Image src={rp.images[0]} alt={rp.name + ' - Buy in Ghana | COD'} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover" /> : <span className="text-5xl">📝</span>}</div><p className="text-sm font-medium line-clamp-2">{rp.name}</p><p className="text-sm font-bold text-amber-600">{formatPrice(rp.price_ghs)}</p></Link>))}</div></>)}
+      {related.length > 0 && (<><Separator className="my-12" /><h2 className="text-2xl font-bold mb-6">Related Products</h2><div className="grid grid-cols-2 md:grid-cols-4 gap-4">{related.map(rp => (<Link key={rp.id} href={`/products/${rp.slug}`} className="group"><div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-2 group-hover:opacity-80 transition-opacity flex items-center justify-center relative">{rp.images?.[0] ? <Image src={rp.images[0]} alt={rp.name + ' - Buy in Ghana | COD'} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover" /> : <span className="text-5xl">📦</span>}</div><p className="text-sm font-medium line-clamp-2">{rp.name}</p><p className="text-sm font-bold text-amber-600">{formatPrice(rp.price_ghs)}</p></Link>))}</div></>)}
 
       <ProductReviews productId={product.id} />
 

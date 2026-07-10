@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/components/shop/auth-context";
 import { useCartContext } from "@/components/shop/cart-context";
-import { MetaPixel, TikTokPixel } from "@/lib/pixel"
+import { MetaPixel, TikTokPixel, generatePixelEventId } from "@/lib/pixel"
 import { useAnalytics } from "@/hooks/use-analytics";
 import { toast } from "sonner";
 
@@ -25,7 +25,7 @@ function itemUnitPrice(item: ReturnType<typeof useCartContext>["items"][number])
 }
 
 
-import { getMetaCookie, sendCapiClientEvent } from "@/lib/capi-client";
+import { getMetaCookie, sendCapiClientEvent, generateEventId } from "@/lib/capi-client";
 
 
 export default function CheckoutPage() {
@@ -54,6 +54,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (itemCount > 0 && finalTotal > 0 && !hasFiredCheckout.current) {
       hasFiredCheckout.current = true;
+      const eventID = generateEventId("InitiateCheckout")
       trackEvent("checkout")
       try {
         MetaPixel.initiateCheckout({
@@ -63,8 +64,11 @@ export default function CheckoutPage() {
           num_items: itemCount,
           value: finalTotal,
           currency: "GHS",
+          eventID,
         });
         sendCapiClientEvent("InitiateCheckout", {
+          eventId: eventID,
+          eventSourceUrl: typeof window !== "undefined" ? window.location.href : "",
           contentIds: items.map(i => i.product.id),
           contents: items.map(i => ({ id: i.product.id, quantity: i.quantity })),
           numItems: itemCount,
@@ -98,13 +102,13 @@ export default function CheckoutPage() {
       const c = coupons.find((co: any) => co.code === couponCode.toUpperCase() && co.active);
       if (!c) { toast.error("Invalid coupon code"); return; }
       if (c.minOrder && total < c.minOrder) {
-        toast.error("Minimum order: GH₵ " + c.minOrder.toLocaleString());
+        toast.error("Minimum order: GH₵" + c.minOrder.toLocaleString());
         return;
       }
       const d = c.type === "percent" ? Math.round(total * c.discount / 100) : c.discount;
       setCouponDiscount(d);
       setCouponApplied(c.code);
-      toast.success("Saved GH₵ " + d.toLocaleString() + "!");
+      toast.success("Saved GH₵" + d.toLocaleString() + "!");
     } catch { toast.error("Failed to apply coupon"); }
   };
 
@@ -129,29 +133,29 @@ export default function CheckoutPage() {
     try {
       const fullName = form.firstName + " " + form.lastName;
       const addressParts = [
-        form.address,
-        form.city,
-        form.country
-      ].filter(Boolean);
+        form.address.trim()
+      ];
+      if (form.city.trim()) addressParts.push(form.city.trim());
+      if (form.country.trim()) addressParts.push(form.country.trim());
       const fullAddress = addressParts.join(", ");
 
       const payload = {
         customer: {
           name: fullName,
           phone: form.phone,
-          altPhone: "",
-          email: form.email,
+          email: form.email || undefined,
           city: form.city,
-          region: "",
           address: fullAddress,
+          region: form.country,
+          notes: undefined,
           deliveryTime: "any",
-          notes: ""
         },
         items: items.map(i => ({ productId: i.product.id, quantity: i.quantity, variantId: i.variant_id || undefined, variantName: i.variant?.name || undefined, variantSku: i.variant?.sku || undefined })),
         couponCode: couponApplied,
         fbp: getMetaCookie("_fbp"),
         fbc: getMetaCookie("_fbc"),
-        userId: user?.id || null
+        userId: user?.id || null,
+        eventSourceUrl: typeof window !== "undefined" ? window.location.href : "",
       };
 
       const res = await fetch("/api/orders", {
@@ -163,11 +167,12 @@ export default function CheckoutPage() {
       if (!res.ok) throw new Error("Order failed");
 
       const data = await res.json();
-      setOrderId(data.id);
+      setOrderId(String(data.id));
       setSuccess(true);
       clearCart();
 
-      // Meta Pixel - Purchase
+      // Meta Pixel - Purchase (use the server eventId for dedup)
+      const purchaseEventID = data.eventId || generatePixelEventId("Purchase")
       try {
         MetaPixel.purchase({
           content_ids: items.map(i => i.product.id),
@@ -175,12 +180,15 @@ export default function CheckoutPage() {
           num_items: itemCount,
           value: finalTotal,
           currency: "GHS",
+          order_id: String(data.id),
+          eventID: purchaseEventID,
         });
         try {
           TikTokPixel.purchase({
             contents: items.map(i => ({ content_id: i.product.id, content_name: i.product.name, quantity: i.quantity, price: itemUnitPrice(i) })),
             value: finalTotal,
             currency: "GHS",
+            order_id: String(data.id),
           });
         } catch (_) {} 
       } catch (_) {
@@ -202,30 +210,33 @@ export default function CheckoutPage() {
       <div className="container mx-auto px-4 py-16 text-center max-w-md">
         <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
         <h1 className="text-2xl font-bold mb-2">Order Placed Successfully!</h1>
-        <p className="text-gray-500 mb-2">Your order ID is <strong>#{orderId}</strong></p>
-        <p className="text-gray-500 text-sm mb-6">
-          We will call {form.phone} to confirm your order.
-          Pay cash when your items are delivered.
-        </p>
-        <div className="flex gap-3 justify-center">
-          <Link href="/products" className="inline-flex items-center justify-center rounded-lg text-sm font-medium border bg-white text-gray-700 hover:bg-gray-50 h-10 px-4 transition-colors">
-            Continue Shopping
-          </Link>
-          <Link href="/track" className="inline-flex items-center justify-center rounded-lg text-sm font-medium bg-amber-500 text-white hover:bg-amber-600 h-10 px-4 transition-colors">
-            Track Order
-          </Link>
+        <p className="text-gray-500 mb-2">Order #{orderId}</p>
+        <p className="text-gray-500 mb-6">We will call you shortly to confirm your order.</p>
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-left">
+          <p className="font-semibold text-amber-900 text-sm mb-2 flex items-center gap-1">
+            <AlertCircle className="h-4 w-4" /> What happens next?
+          </p>
+          <ol className="text-xs text-amber-700 space-y-1 list-decimal list-inside">
+            <li>We call to confirm your order</li>
+            <li>We prepare your items</li>
+            <li>Delivery to your address</li>
+            <li>You inspect the items and pay cash</li>
+          </ol>
         </div>
+        <Link href="/" className="inline-flex items-center justify-center rounded-lg text-sm font-medium bg-amber-500 text-white hover:bg-amber-600 h-10 px-6">
+          Back to Home
+        </Link>
       </div>
     );
   }
 
-  // --- Render: Empty Cart ---
   if (items.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16 text-center">
+      <div className="container mx-auto px-4 py-16 text-center max-w-md">
+        <ShoppingCart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
         <h1 className="text-2xl font-bold mb-2">Your cart is empty</h1>
         <p className="text-gray-500 mb-6">Add some products before checking out.</p>
-        <Link href="/products" className="inline-flex items-center justify-center rounded-lg text-sm font-medium bg-amber-500 text-white hover:bg-amber-600 h-10 px-4 transition-colors">
+        <Link href="/products" className="inline-flex items-center justify-center rounded-lg text-sm font-medium bg-amber-500 text-white hover:bg-amber-600 h-10 px-4">
           Browse Products
         </Link>
       </div>
@@ -233,11 +244,10 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 overflow-x-hidden">
-      <Link href="/cart" className="inline-flex items-center text-sm text-gray-500 hover:text-amber-600 mb-6">
+    <div className="container mx-auto px-4 py-8">
+      <Link href="/cart" className="inline-flex items-center text-sm text-gray-500 hover:text-amber-600 mb-4">
         <ChevronLeft className="h-4 w-4 mr-1" /> Back to Cart
       </Link>
-
       <h1 className="text-2xl font-bold mb-6">Checkout</h1>
 
       <div className="grid lg:grid-cols-3 gap-6 min-w-0">
@@ -274,7 +284,7 @@ export default function CheckoutPage() {
               </div>
               <div className="space-y-1.5">
                 <Label>Email</Label>
-                <Input placeholder="you@example.com" type="email" value={form.email}
+                <Input placeholder="john@example.com" value={form.email}
                   onChange={e => setField("email", e.target.value)}
                   className={errors.email ? "border-red-500" : ""} />
                 {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
@@ -282,36 +292,24 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Location */}
-          <div className="bg-white border rounded-xl p-6 space-y-4">
-            <h2 className="font-semibold text-lg flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-amber-500" /> Location
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <Label>City *</Label>
-                <Input placeholder="Accra, Kumasi..." value={form.city}
-                  onChange={e => setField("city", e.target.value)}
-                  className={errors.city ? "border-red-500" : ""} />
-                {errors.city && <p className="text-xs text-red-500">{errors.city}</p>}
-              </div>
-              <div className="space-y-1.5">
-                <Label>Region</Label>
-                <Input placeholder="Greater Accra" value={form.country}
-                  onChange={e => setField("country", e.target.value)}
-                  className={errors.country ? "border-red-500" : ""} />
-                {errors.country && <p className="text-xs text-red-500">{errors.country}</p>}
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            </div>
-          </div>
-
-          {/* Address */}
+          {/* Delivery Info */}
           <div className="bg-white border rounded-xl p-6 space-y-4">
             <h2 className="font-semibold text-lg flex items-center gap-2">
               <Navigation className="h-5 w-5 text-amber-500" /> Delivery Address
             </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label>Country *</Label>
+                <Input value="Ghana" disabled />
+              </div>
+              <div className="space-y-1.5">
+                <Label>City *</Label>
+                <Input placeholder="Accra" value={form.city}
+                  onChange={e => setField("city", e.target.value)}
+                  className={errors.city ? "border-red-500" : ""} />
+                {errors.city && <p className="text-xs text-red-500">{errors.city}</p>}
+              </div>
+            </div>
             <div className="space-y-1.5">
               <Label>Detailed Address *</Label>
               <Textarea placeholder="House No. 12, 5th Avenue, East Legon..." value={form.address}
@@ -421,4 +419,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-

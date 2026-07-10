@@ -5,8 +5,13 @@ export function getMetaCookie(name: string): string {
   return match ? decodeURIComponent(match[2]) : "";
 }
 
+// Generate a unique event ID for browser/server deduplication
+export function generateEventId(prefix: string): string {
+  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+}
+
 // Fire-and-forget CAPI event from client side
-export function sendCapiClientEvent(event: "AddToCart" | "InitiateCheckout", data: Record<string, unknown>) {
+export function sendCapiClientEvent(event: "AddToCart" | "InitiateCheckout" | "ViewContent" | "Search" | "Contact", data: Record<string, unknown>) {
   fetch("/api/capi/event", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

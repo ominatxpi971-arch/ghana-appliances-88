@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import { CartItem, Product, ProductVariant } from "@/lib/types"
 import { MetaPixel, TikTokPixel } from "@/lib/pixel"
 import { useAnalytics } from "@/hooks/use-analytics"
-import { sendCapiClientEvent } from "@/lib/capi-client"
+import { sendCapiClientEvent, generateEventId } from "@/lib/capi-client"
 
 const CART_KEY = "ghana-appliances-cart"
 
@@ -71,12 +71,13 @@ export function useCart() {
     const saved = saveCart(current)
     if (saved) setItems(current)
 
-    // Analytics and pixel calls are fire-and-forget
+    // Analytics and pixel calls are fire-and-forget with shared eventID for dedup
     const effectivePrice = variant?.price_ghs && variant.price_ghs > 0 ? variant.price_ghs : product.price_ghs
     if (effectivePrice > 0 && quantity > 0) {
+      const eventID = generateEventId("AddToCart")
       try { trackEventRef.current("add_to_cart", product.slug) } catch (_) {}
-      try { MetaPixel.addToCart({ content_ids: [product.id], content_name: product.name, content_type: "product", value: effectivePrice * quantity, currency: "GHS", num_items: quantity }) } catch (_) {}
-    sendCapiClientEvent("AddToCart", { contentIds: [product.id], contentName: product.name, value: effectivePrice * quantity, numItems: quantity })
+      try { MetaPixel.addToCart({ content_ids: [product.id], content_name: product.name, content_type: "product", value: effectivePrice * quantity, currency: "GHS", num_items: quantity, eventID }) } catch (_) {}
+    sendCapiClientEvent("AddToCart", { eventId: eventID, eventSourceUrl: typeof window !== "undefined" ? window.location.href : "", contentIds: [product.id], contentName: product.name, value: effectivePrice * quantity, numItems: quantity })
       try { TikTokPixel.addToCart({ content_id: product.id, content_name: product.name, value: effectivePrice * quantity, currency: "GHS", quantity }) } catch (_) {}
     }
   }, [])

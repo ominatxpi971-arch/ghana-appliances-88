@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea"
 import Breadcrumbs from "@/components/Breadcrumbs"
 import { toast } from "sonner"
 import { MetaPixel, TikTokPixel } from "@/lib/pixel"
+import { sendCapiClientEvent, generateEventId } from "@/lib/capi-client"
+
 export default function ContactPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -33,7 +35,15 @@ export default function ContactPage() {
       })
       if (res.ok) {
         setSent(true)
+        const eventID = generateEventId("Contact")
         try { MetaPixel.contact() } catch (_) {} try { TikTokPixel.contact() } catch (_) {}
+        // CAPI Contact event for lead tracking
+        sendCapiClientEvent("Contact", {
+          eventId: eventID,
+          eventSourceUrl: typeof window !== "undefined" ? window.location.href : "",
+          email,
+          phone,
+        })
         toast.success("Message sent! We will get back to you soon.")
       } else {
         toast.error("Failed to send. Please try again.")
@@ -79,7 +89,7 @@ export default function ContactPage() {
           <h2 className="font-semibold text-lg mb-4">Send us a Message</h2>
           {sent ? (
             <div className="text-center py-8">
-              <div className="text-5xl mb-4">\u2705</div>
+              <div className="text-5xl mb-4">✅</div>
               <h3 className="text-xl font-bold mb-2">Message Sent!</h3>
               <p className="text-gray-500">Thank you for reaching out. We will get back to you within 24 hours.</p>
               <Button variant="outline" className="mt-4" onClick={() => { setSent(false); setName(""); setEmail(""); setPhone(""); setSubject(""); setMessage("") }}>Send Another Message</Button>
@@ -121,4 +131,3 @@ export default function ContactPage() {
     </div>
   )
 }
-

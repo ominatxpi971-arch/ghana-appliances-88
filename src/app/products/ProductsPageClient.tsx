@@ -12,6 +12,7 @@ import { formatPrice } from "@/lib/utils"
 import { Product } from "@/lib/types"
 import { MetaPixel, TikTokPixel } from "@/lib/pixel"
 import { useAnalytics } from "@/hooks/use-analytics"
+import { sendCapiClientEvent, generateEventId } from "@/lib/capi-client"
 
 const CATEGORIES = [
   { value: "all", label: "All Categories" },
@@ -70,8 +71,15 @@ export default function ProductsPageClient({ initialProducts }: ProductsPageClie
   useEffect(() => {
     if (searchTimer.current) clearTimeout(searchTimer.current)
     if (search.trim().length > 0) {
+      const eventID = generateEventId("Search")
       searchTimer.current = setTimeout(() => {
         MetaPixel.search({ search_string: search.trim() }); try { TikTokPixel.search({ search_string: search.trim() }) } catch (_) {}
+        // CAPI Search event for better campaign optimization
+        sendCapiClientEvent("Search", {
+          eventId: eventID,
+          eventSourceUrl: typeof window !== "undefined" ? window.location.href : "",
+          searchString: search.trim(),
+        })
         trackSearch(search.trim(), filtered.length)
       }, 800)
     }

@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
-  const { customer, items, couponCode } = body
+  const { customer, items, couponCode, fbp, fbc, userId } = body
   const products = await getProducts()
   const clientIP = getClientIP(request)
 
@@ -91,18 +91,24 @@ export async function POST(request: NextRequest) {
     items: orderItems,
   })
 
-  // Server-side CAPI Purchase event (fire-and-forget)
-  getSettings().then(settings => {
+  // Server-side CAPI Purchase event (awaited BEFORE response to ensure delivery on Vercel)
+  const eventId = `purchase_${newOrder.id}`
+  try {
+    const settings = await getSettings()
     if (settings?.meta_pixel_id && settings?.meta_pixel_access_token) {
-      sendCapiPurchase({
+      await sendCapiPurchase({
         pixelId: settings.meta_pixel_id,
         accessToken: settings.meta_pixel_access_token,
-        eventId: `purchase_${newOrder.id}`,
-        eventSourceUrl: `${process.env.NEXT_PUBLIC_SITE_URL || "https://ghanaappliance.cc"}/checkout`,
+        eventId,
+        eventSourceUrl: body.eventSourceUrl || `${process.env.NEXT_PUBLIC_SITE_URL || "https://ghanaappliance.cc"}/checkout`,
+        externalId: userId || undefined,
+        country: "GH",
         customerEmail: customer.email,
         customerPhone: customer.phone,
         clientIp: clientIP,
         clientUserAgent: request.headers.get("user-agent") || "",
+        fbp: fbp || undefined,
+        fbc: fbc || undefined,
         value: total,
         currency: "GHS",
         contentIds: items.map((i: any) => i.productId),
@@ -112,11 +118,14 @@ export async function POST(request: NextRequest) {
         }),
         numItems: items.reduce((sum: number, i: any) => sum + i.quantity, 0),
         orderId: String(newOrder.id),
-      }).catch(e => console.error("[CAPI] Purchase event failed:", e))
+      })
     }
-  })
+  } catch (e) {
+    console.error("[CAPI] Purchase event failed:", e)
+  }
 
+  // Fire-and-forget: emails (don't block response)
   if (customer.email) { sendOrderConfirmation(newOrder).catch(e => console.error("[Order] Confirmation email failed:", e)) }
   sendAdminNotification(newOrder).catch(e => console.error("[Order] Admin notification failed:", e))
-  return NextResponse.json(newOrder, { status: 201 })
+  return NextResponse.json({ ...newOrder, eventId }, { status: 201 })
 }

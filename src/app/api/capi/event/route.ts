@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSettings } from "@/lib/db";
-import { sendCapiAddToCart, sendCapiInitiateCheckout } from "@/lib/capi";
+import { sendCapiAddToCart, sendCapiInitiateCheckout, sendCapiViewContent, sendCapiSearch, sendCapiContact } from "@/lib/capi";
 
 function getClientIP(request: NextRequest): string {
   return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
@@ -9,12 +9,14 @@ function getClientIP(request: NextRequest): string {
     "unknown";
 }
 
+const VALID_EVENTS = ["AddToCart", "InitiateCheckout", "ViewContent", "Search", "Contact"] as const;
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { event, email, phone, value, currency, contentIds, contentName, contents, numItems, fbp, fbc, eventSourceUrl } = body;
+    const { event, email, phone, value, currency, contentIds, contentName, contentCategory, contents, numItems, fbp, fbc, eventSourceUrl, eventId, searchString } = body;
 
-    if (!event || !["AddToCart", "InitiateCheckout"].includes(event)) {
+    if (!event || !VALID_EVENTS.includes(event)) {
       return NextResponse.json({ error: "Invalid event" }, { status: 400 });
     }
 
@@ -27,40 +29,89 @@ export async function POST(request: NextRequest) {
     const ua = request.headers.get("user-agent") || "";
 
     let result = false;
-    if (event === "AddToCart") {
-      result = await sendCapiAddToCart({
-        pixelId: settings.meta_pixel_id,
-        accessToken: settings.meta_pixel_access_token,
-        eventSourceUrl: eventSourceUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,
-        customerEmail: email,
-        customerPhone: phone,
-        clientIp: clientIP,
-        clientUserAgent: ua,
-        fbp,
-        fbc,
-        value,
-        currency: currency || "GHS",
-        contentIds,
-        contentName,
-        numItems,
-      });
-    } else if (event === "InitiateCheckout") {
-      result = await sendCapiInitiateCheckout({
-        pixelId: settings.meta_pixel_id,
-        accessToken: settings.meta_pixel_access_token,
-        eventSourceUrl: eventSourceUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/checkout`,
-        customerEmail: email,
-        customerPhone: phone,
-        clientIp: clientIP,
-        clientUserAgent: ua,
-        fbp,
-        fbc,
-        value,
-        currency: currency || "GHS",
-        contentIds,
-        contents,
-        numItems,
-      });
+    switch (event) {
+      case "AddToCart":
+        result = await sendCapiAddToCart({
+          pixelId: settings.meta_pixel_id,
+          accessToken: settings.meta_pixel_access_token,
+          eventId: eventId || `${event}_${Date.now()}`,
+          eventSourceUrl: eventSourceUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/cart`,
+          customerEmail: email,
+          customerPhone: phone,
+          clientIp: clientIP,
+          clientUserAgent: ua,
+          fbp,
+          fbc,
+          value,
+          currency: currency || "GHS",
+          contentIds,
+          contentName,
+          numItems,
+        });
+        break;
+      case "InitiateCheckout":
+        result = await sendCapiInitiateCheckout({
+          pixelId: settings.meta_pixel_id,
+          accessToken: settings.meta_pixel_access_token,
+          eventId: eventId || `${event}_${Date.now()}`,
+          eventSourceUrl: eventSourceUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/checkout`,
+          customerEmail: email,
+          customerPhone: phone,
+          clientIp: clientIP,
+          clientUserAgent: ua,
+          fbp,
+          fbc,
+          value,
+          currency: currency || "GHS",
+          contentIds,
+          contents,
+          numItems,
+        });
+        break;
+      case "ViewContent":
+        result = await sendCapiViewContent({
+          pixelId: settings.meta_pixel_id,
+          accessToken: settings.meta_pixel_access_token,
+          eventId: eventId || `${event}_${Date.now()}`,
+          eventSourceUrl: eventSourceUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/products`,
+          fbp,
+          fbc,
+          clientIp: clientIP,
+          clientUserAgent: ua,
+          contentIds,
+          contentName,
+          contentCategory,
+          value,
+          currency: currency || "GHS",
+        });
+        break;
+      case "Search":
+        result = await sendCapiSearch({
+          pixelId: settings.meta_pixel_id,
+          accessToken: settings.meta_pixel_access_token,
+          eventId: eventId || `${event}_${Date.now()}`,
+          eventSourceUrl: eventSourceUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/products`,
+          fbp,
+          fbc,
+          clientIp: clientIP,
+          clientUserAgent: ua,
+          searchString,
+        });
+        break;
+      case "Contact":
+        result = await sendCapiContact({
+          pixelId: settings.meta_pixel_id,
+          accessToken: settings.meta_pixel_access_token,
+          eventId: eventId || `${event}_${Date.now()}`,
+          eventSourceUrl: eventSourceUrl || `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
+          customerEmail: email,
+          customerPhone: phone,
+          clientIp: clientIP,
+          clientUserAgent: ua,
+          fbp,
+          fbc,
+        });
+        break;
     }
 
     return NextResponse.json({ success: result });
