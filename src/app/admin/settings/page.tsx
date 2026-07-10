@@ -57,7 +57,7 @@ const DEFAULTS: any = {
   hero1_bg: "from-gray-900 via-gray-800 to-amber-900", hero1_accent: "amber", hero1_icon: "🏠", hero1_image: "",
   hero2_badge: "💰 Best Deals", hero2_title: "Up to 30% Off", hero2_highlight: "Selected Appliances",
   hero2_subtitle: "Limited-time offers on top brands.", hero2_cta: "View Deals", hero2_cta_link: "/products",
-  hero2_bg: "from-amber-900 via-orange-800 to-red-900", hero2_accent: "orange", hero2_icon: "🏷�?, hero2_image: "",
+  hero2_bg: "from-amber-900 via-orange-800 to-red-900", hero2_accent: "orange", hero2_icon: "🏷️",hero2_image: "",
   hero3_badge: "🚚 Free Delivery", hero3_title: "Free Delivery in", hero3_highlight: "Greater Accra",
   hero3_subtitle: "Order today and get free delivery within Greater Accra.", hero3_cta: "Order Now", hero3_cta_link: "/products",
   hero3_bg: "from-green-900 via-emerald-800 to-teal-900", hero3_accent: "emerald", hero3_icon: "📦", hero3_image: "",
