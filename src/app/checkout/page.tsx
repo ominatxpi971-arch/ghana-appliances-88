@@ -24,6 +24,15 @@ function itemUnitPrice(item: ReturnType<typeof useCartContext>["items"][number])
   return item.product.price_ghs
 }
 
+
+/** Read Meta cookies for CAPI matching */
+function getMetaCookie(name: string): string {
+  if (typeof document === "undefined") return "";
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : "";
+}
+
+
 export default function CheckoutPage() {
   const { trackEvent } = useAnalytics()
   const { items, total, itemCount, clearCart } = useCartContext();
@@ -139,6 +148,8 @@ export default function CheckoutPage() {
         },
         items: items.map(i => ({ productId: i.product.id, quantity: i.quantity, variantId: i.variant_id || undefined, variantName: i.variant?.name || undefined, variantSku: i.variant?.sku || undefined })),
         couponCode: couponApplied,
+        fbp: getMetaCookie("_fbp"),
+        fbc: getMetaCookie("_fbc"),
         userId: user?.id || null
       };
 

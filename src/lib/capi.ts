@@ -86,6 +86,8 @@ export async function sendCapiPurchase(params: {
   customerPhone?: string
   clientIp?: string
   clientUserAgent?: string
+  fbp?: string
+  fbc?: string
   value: number
   currency?: string
   contentIds?: string[]
@@ -105,6 +107,12 @@ export async function sendCapiPurchase(params: {
   }
   if (params.clientUserAgent) {
     userData.client_user_agent = params.clientUserAgent
+  }
+  if (params.fbp) {
+    userData.fbp = params.fbp
+  }
+  if (params.fbc) {
+    userData.fbc = params.fbc
   }
 
   return sendCapiEvent(params.pixelId, params.accessToken, {
