@@ -57,7 +57,7 @@ const DEFAULTS: any = {
   hero1_bg: "from-gray-900 via-gray-800 to-amber-900", hero1_accent: "amber", hero1_icon: "🏠", hero1_image: "",
   hero2_badge: "💰 Best Deals", hero2_title: "Up to 30% Off", hero2_highlight: "Selected Appliances",
   hero2_subtitle: "Limited-time offers on top brands.", hero2_cta: "View Deals", hero2_cta_link: "/products",
-  hero2_bg: "from-amber-900 via-orange-800 to-red-900", hero2_accent: "orange", hero2_icon: "🏷�?, hero2_image: "",
+  hero2_bg: "from-amber-900 via-orange-800 to-red-900", hero2_accent: "orange", hero2_icon: "🏷�?, hero2_image: "",
   hero3_badge: "🚚 Free Delivery", hero3_title: "Free Delivery in", hero3_highlight: "Greater Accra",
   hero3_subtitle: "Order today and get free delivery within Greater Accra.", hero3_cta: "Order Now", hero3_cta_link: "/products",
   hero3_bg: "from-green-900 via-emerald-800 to-teal-900", hero3_accent: "emerald", hero3_icon: "📦", hero3_image: "",
@@ -270,7 +270,12 @@ export default function AdminSettings() {
             <Label>Meta Pixel ID</Label>
             <Input value={settings.meta_pixel_id || ""} onChange={e => set("meta_pixel_id", e.target.value)} placeholder="e.g. 123456789012345" />
             <p className="text-xs text-gray-400">Facebook Pixel ID for tracking. Events: PageView, ViewContent, AddToCart, InitiateCheckout, Purchase.</p>
+
           </div>
+          <div className="space-y-1.5">
+            <Label>Meta CAPI Access Token</Label>
+            <Input value={settings.meta_pixel_access_token || ""} onChange={e => set("meta_pixel_access_token", e.target.value)} placeholder="EAA..." type="password" />
+            <p className="text-xs text-gray-400">Meta Conversions API access token. Get from Events Manager → Settings → Conversions API. Required for server-side Purchase tracking.</p>          </div>
           <div className="space-y-1.5">
             <Label>Google Analytics ID</Label>
             <Input value={settings.google_analytics_id || ""} onChange={e => set("google_analytics_id", e.target.value)} placeholder="e.g. G-XXXXXXXXXX" />
